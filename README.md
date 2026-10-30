@@ -1,5 +1,12 @@
 # 电子设备故障诊断研究原型
 
+[![Stars](https://img.shields.io/github/stars/JINRONG121312/electronic-device-fault-diagnosis?style=flat-square&color=4b97dd)](https://github.com/JINRONG121312/electronic-device-fault-diagnosis/stargazers)
+[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-ffb26b?style=flat-square)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-3776ab?style=flat-square)](#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-8e8e93?style=flat-square)](#)
+[![Status](https://img.shields.io/badge/status-research%20prototype-f0a500?style=flat-square)](#%E8%BE%B9%E7%95%8C%E4%B8%8E%E7%8A%B6%E6%80%81)
+[![Series](https://img.shields.io/badge/series-3%20posts-4b97dd?style=flat-square)](docs/series)
+
 > 一台电脑出问题，维修店说"换主板"——但它可能只是驱动装错了。
 >
 > 这个项目想做的，是把"换哪个件"往后放一格，先回答**故障到底出在软件栈的哪一层**。
@@ -88,4 +95,8 @@ data/              样例证据（runtime_info.json）
 
 ## 许可
 
-暂未声明开源许可。如需引用或二创，请先联系作者。
+采用 **[PolyForm Noncommercial License 1.0.0](LICENSE)**：个人、学习、科研与公益使用免费；**商业用途需另行授权**。
+
+> 严格说是「源码公开的非商业许可」（source-available），不是 OSI 定义的开源许可。
+>
+> 论文引用、课程作业、二次研究都欢迎，注明出处即可。
