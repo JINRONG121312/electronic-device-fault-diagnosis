@@ -1,0 +1,102 @@
+{
+  "device_type": "server",
+  "display_name": "Generic Rack Server",
+  "version": "1.0",
+  "description": "FRU profile showing how the same diagnosis engine can support servers.",
+  "metadata": {
+    "os_family": "linux_or_windows",
+    "diagnosis_level": "FRU"
+  },
+  "fru_list": [
+    {
+      "id": "psu_1",
+      "name": "Power Supply Unit 1",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "description": "Hot-swappable power supply module.",
+      "aliases": ["psu", "power supply"],
+      "evidence_rules": [
+        {
+          "id": "psu_alert",
+          "evidence_type": "health_warning",
+          "source": "bmc_sel",
+          "pattern": "psu|power supply|input lost",
+          "weight": 1.0,
+          "description": "BMC system event log reports a PSU warning."
+        }
+      ]
+    },
+    {
+      "id": "disk_bay_1",
+      "name": "Disk Bay 1",
+      "category": "StorageFRU",
+      "replaceable": true,
+      "description": "Hot-swappable storage drive.",
+      "aliases": ["disk", "drive", "storage"],
+      "evidence_rules": [
+        {
+          "id": "server_disk_smart_warning",
+          "evidence_type": "health_warning",
+          "source": "smart",
+          "pattern": "reallocated|media error|predictive failure",
+          "weight": 1.0,
+          "description": "SMART data reports a predictive drive failure."
+        }
+      ]
+    },
+    {
+      "id": "nic_1",
+      "name": "Network Interface Card 1",
+      "category": "CommunicationFRU",
+      "replaceable": true,
+      "description": "Replaceable network interface card or adapter.",
+      "aliases": ["nic", "ethernet", "network card"],
+      "evidence_rules": [
+        {
+          "id": "nic_link_flap",
+          "evidence_type": "log_pattern",
+          "source": "system_log",
+          "pattern": "link down|link up|nic|ethernet",
+          "weight": 0.8,
+          "description": "Network link flaps repeatedly in system logs."
+        }
+      ]
+    },
+    {
+      "id": "fan_tray",
+      "name": "Fan Tray",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "description": "Hot-swappable fan tray.",
+      "aliases": ["fan", "cooling"],
+      "evidence_rules": [
+        {
+          "id": "fan_alert",
+          "evidence_type": "health_warning",
+          "source": "bmc_sensor",
+          "pattern": "fan failure|fan speed low",
+          "weight": 1.0,
+          "description": "BMC sensor data reports fan failure."
+        }
+      ]
+    },
+    {
+      "id": "system_board",
+      "name": "System Board",
+      "category": "MainboardFRU",
+      "replaceable": true,
+      "description": "Main server system board.",
+      "aliases": ["mainboard", "motherboard"],
+      "evidence_rules": [
+        {
+          "id": "server_multi_component_failure",
+          "evidence_type": "device_state",
+          "source": "bmc_sel",
+          "pattern": "multi_component_failure",
+          "weight": 0.7,
+          "description": "Multiple independent components fail at the same time."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,544 @@
+﻿{
+    "device_type":  "laptop",
+    "display_name":  "ASUSTeK COMPUTER INC. ASUS TUF Gaming F16 FX607JV_FX607JV",
+    "version":  "1.0",
+    "description":  "Auto-detected FRU profile generated from Windows CIM/WMI hardware inventory.",
+    "metadata":  {
+                     "generator":  "scripts/detect_fru.ps1",
+                     "generated_at":  "2026-06-29T12:48:38",
+                     "computer_name":  "GONGBINGLAN",
+                     "manufacturer":  "ASUSTeK COMPUTER INC.",
+                     "model":  "ASUS TUF Gaming F16 FX607JV_FX607JV",
+                     "os_caption":  "Microsoft Windows 11 家庭版 中文版",
+                     "os_version":  "10.0.26200",
+                     "pc_system_type":  2,
+                     "chassis_types":  10,
+                     "ignored_virtual_network_adapters":  [
+                                                              "Microsoft Wi-Fi Direct Virtual Adapter",
+                                                              "Microsoft Wi-Fi Direct Virtual Adapter #2"
+                                                          ],
+                     "ignored_virtual_display_adapters":  [
+                                                              "Sharing Monitor",
+                                                              "GameViewer Virtual Display Adapter"
+                                                          ]
+                 },
+    "fru_list":  [
+                     {
+                         "id":  "battery_1f38as3gwaf3kcga50358_ga50358",
+                         "name":  "Battery Pack - GA50358",
+                         "category":  "PowerFRU",
+                         "replaceable":  true,
+                         "description":  "Detected battery module. Status=OK; EstimatedChargeRemaining=86.",
+                         "aliases":  [
+                                         "battery",
+                                         "bms",
+                                         "power"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "battery_1f38as3gwaf3kcga50358_ga50358_charge_low",
+                                                    "evidence_type":  "metric_threshold",
+                                                    "source":  "battery_status",
+                                                    "weight":  0.3,
+                                                    "description":  "Battery charge is critically low.",
+                                                    "metric":  "estimated_charge_remaining",
+                                                    "operator":  "\u003c",
+                                                    "threshold":  10
+                                                },
+                                                {
+                                                    "id":  "battery_1f38as3gwaf3kcga50358_ga50358_power_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.5,
+                                                    "description":  "Power or charging events appear in system logs.",
+                                                    "pattern":  "battery|charging|acpi|kernel-power"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "storage_0_nvme_wd_pc_sn560_sddpnqe_1t00_1102",
+                         "name":  "Storage Drive - NVMe WD PC SN560 SDDPNQE-1T00-1102",
+                         "category":  "StorageFRU",
+                         "replaceable":  true,
+                         "description":  "Detected storage module. Interface=SCSI; SizeBytes=1024203640320; Status=OK.",
+                         "aliases":  [
+                                         "disk",
+                                         "ssd",
+                                         "hdd",
+                                         "nvme",
+                                         "storage"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "storage_0_nvme_wd_pc_sn560_sddpnqe_1t00_1102_smart_warning",
+                                                    "evidence_type":  "health_warning",
+                                                    "source":  "smart",
+                                                    "weight":  1,
+                                                    "description":  "SMART or storage health data reports a warning.",
+                                                    "pattern":  "critical_warning|media_errors|predictive failure|bad block"
+                                                },
+                                                {
+                                                    "id":  "storage_0_nvme_wd_pc_sn560_sddpnqe_1t00_1102_io_error_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.8,
+                                                    "description":  "Storage-related errors appear in system logs.",
+                                                    "pattern":  "disk|ntfs|storahci|stornvme|bad block|io error"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "memory_controller1_channela_dimm0",
+                         "name":  "Memory Module - Controller1-ChannelA-DIMM0",
+                         "category":  "ComputeFRU",
+                         "replaceable":  true,
+                         "description":  "Detected memory module. CapacityBytes=17179869184; SpeedMHz=5600; Manufacturer=Micron Technology.",
+                         "aliases":  [
+                                         "memory",
+                                         "ram",
+                                         "dimm"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "memory_controller1_channela_dimm0_bugcheck_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.8,
+                                                    "description":  "Crash logs contain memory-related patterns.",
+                                                    "pattern":  "memory management|page fault|bugcheck|whea"
+                                                },
+                                                {
+                                                    "id":  "memory_controller1_channela_dimm0_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "memory_test",
+                                                    "weight":  1,
+                                                    "description":  "Active memory test reports failures.",
+                                                    "pattern":  "failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "network_2_intel_r_wi_fi_6_ax201_160mhz",
+                         "name":  "Network Adapter - Intel(R) Wi-Fi 6 AX201 160MHz",
+                         "category":  "CommunicationFRU",
+                         "replaceable":  true,
+                         "description":  "Detected communication module. NetConnectionStatus=2.",
+                         "aliases":  [
+                                         "wifi",
+                                         "wlan",
+                                         "bluetooth",
+                                         "network"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "network_2_intel_r_wi_fi_6_ax201_160mhz_driver_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "Network adapter reset, disconnect, or link-flap events appear in logs.",
+                                                    "pattern":  "wlan|wifi|netwtw|bluetooth|ethernet|adapter reset|link down|link up"
+                                                },
+                                                {
+                                                    "id":  "network_2_intel_r_wi_fi_6_ax201_160mhz_device_missing",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  1,
+                                                    "description":  "Network adapter is missing, disabled, or reporting a device problem.",
+                                                    "pattern":  "network_missing|adapter_disabled|device_problem"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "network_3_realtek_pcie_gbe_family_controller",
+                         "name":  "Network Adapter - Realtek PCIe GbE Family Controller",
+                         "category":  "CommunicationFRU",
+                         "replaceable":  true,
+                         "description":  "Detected communication module. NetConnectionStatus=7.",
+                         "aliases":  [
+                                         "ethernet",
+                                         "nic",
+                                         "network"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "network_3_realtek_pcie_gbe_family_controller_driver_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "Network adapter reset, disconnect, or link-flap events appear in logs.",
+                                                    "pattern":  "wlan|wifi|netwtw|bluetooth|ethernet|adapter reset|link down|link up"
+                                                },
+                                                {
+                                                    "id":  "network_3_realtek_pcie_gbe_family_controller_device_missing",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  1,
+                                                    "description":  "Network adapter is missing, disabled, or reporting a device problem.",
+                                                    "pattern":  "network_missing|adapter_disabled|device_problem"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "network_17_bluetooth_device_personal_area_network",
+                         "name":  "Network Adapter - Bluetooth Device (Personal Area Network)",
+                         "category":  "CommunicationFRU",
+                         "replaceable":  true,
+                         "description":  "Detected communication module. NetConnectionStatus=7.",
+                         "aliases":  [
+                                         "wifi",
+                                         "wlan",
+                                         "bluetooth",
+                                         "network"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "network_17_bluetooth_device_personal_area_network_driver_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "Network adapter reset, disconnect, or link-flap events appear in logs.",
+                                                    "pattern":  "wlan|wifi|netwtw|bluetooth|ethernet|adapter reset|link down|link up"
+                                                },
+                                                {
+                                                    "id":  "network_17_bluetooth_device_personal_area_network_device_missing",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  1,
+                                                    "description":  "Network adapter is missing, disabled, or reporting a device problem.",
+                                                    "pattern":  "network_missing|adapter_disabled|device_problem"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "display_videocontroller3_nvidia_geforce_rtx_4060_laptop_gpu",
+                         "name":  "Display Adapter - NVIDIA GeForce RTX 4060 Laptop GPU",
+                         "category":  "DisplayFRU",
+                         "replaceable":  true,
+                         "description":  "Detected display-related module. DriverVersion=32.0.15.9597; Status=OK.",
+                         "aliases":  [
+                                         "display",
+                                         "screen",
+                                         "graphics",
+                                         "gpu"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "display_videocontroller3_nvidia_geforce_rtx_4060_laptop_gpu_driver_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.6,
+                                                    "description":  "Display or graphics driver errors appear in logs.",
+                                                    "pattern":  "display|graphics|nvlddmkm|amdkmdag|igfx|dxgkrnl"
+                                                },
+                                                {
+                                                    "id":  "display_videocontroller3_nvidia_geforce_rtx_4060_laptop_gpu_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "display_test",
+                                                    "weight":  1,
+                                                    "description":  "Display active test reports a panel or output failure.",
+                                                    "pattern":  "external_ok_internal_failed|display_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "display_videocontroller4_intel_r_uhd_graphics",
+                         "name":  "Display Adapter - Intel(R) UHD Graphics",
+                         "category":  "DisplayFRU",
+                         "replaceable":  true,
+                         "description":  "Detected display-related module. DriverVersion=32.0.101.6790; Status=OK.",
+                         "aliases":  [
+                                         "display",
+                                         "screen",
+                                         "graphics",
+                                         "gpu"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "display_videocontroller4_intel_r_uhd_graphics_driver_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.6,
+                                                    "description":  "Display or graphics driver errors appear in logs.",
+                                                    "pattern":  "display|graphics|nvlddmkm|amdkmdag|igfx|dxgkrnl"
+                                                },
+                                                {
+                                                    "id":  "display_videocontroller4_intel_r_uhd_graphics_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "display_test",
+                                                    "weight":  1,
+                                                    "description":  "Display active test reports a panel or output failure.",
+                                                    "pattern":  "external_ok_internal_failed|display_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "display_internal_panel",
+                         "name":  "Internal or PnP Display Panel",
+                         "category":  "DisplayFRU",
+                         "replaceable":  true,
+                         "description":  "Detected display panel or monitor device. DeviceCount=3.",
+                         "aliases":  [
+                                         "display",
+                                         "screen",
+                                         "panel",
+                                         "monitor",
+                                         "edp"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "display_panel_device_error",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  0.8,
+                                                    "description":  "Display panel or monitor device is missing or reporting a problem.",
+                                                    "pattern":  "display_missing|monitor_problem|panel_problem"
+                                                },
+                                                {
+                                                    "id":  "display_panel_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "display_test",
+                                                    "weight":  1,
+                                                    "description":  "Display active test reports panel failure.",
+                                                    "pattern":  "external_ok_internal_failed|display_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "input_keyboard_touchpad",
+                         "name":  "Keyboard and Touchpad Assembly",
+                         "category":  "InputFRU",
+                         "replaceable":  true,
+                         "description":  "Detected keyboard or HID input assembly. KeyboardCount=5.",
+                         "aliases":  [
+                                         "keyboard",
+                                         "touchpad",
+                                         "hid",
+                                         "input"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "input_hid_error_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "HID device errors appear in system logs.",
+                                                    "pattern":  "hid|keyboard|touchpad|i2c hid"
+                                                },
+                                                {
+                                                    "id":  "input_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "input_test",
+                                                    "weight":  1,
+                                                    "description":  "Input active test reports keyboard or touchpad failure.",
+                                                    "pattern":  "key_failed|touchpad_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "input_touchpad",
+                         "name":  "Touchpad Module",
+                         "category":  "InputFRU",
+                         "replaceable":  true,
+                         "description":  "Detected touchpad or I2C HID input module. DeviceCount=3.",
+                         "aliases":  [
+                                         "touchpad",
+                                         "trackpad",
+                                         "i2c hid",
+                                         "input"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "touchpad_hid_error_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "Touchpad or I2C HID errors appear in system logs.",
+                                                    "pattern":  "touchpad|i2c hid|hid"
+                                                },
+                                                {
+                                                    "id":  "touchpad_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "input_test",
+                                                    "weight":  1,
+                                                    "description":  "Touchpad active test reports touchpad failure.",
+                                                    "pattern":  "touchpad_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "sensor_camera",
+                         "name":  "Camera Module",
+                         "category":  "SensorFRU",
+                         "replaceable":  true,
+                         "description":  "Detected camera module. DeviceCount=1.",
+                         "aliases":  [
+                                         "camera",
+                                         "webcam",
+                                         "uvc"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "camera_device_error",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  0.9,
+                                                    "description":  "Camera device is missing or reporting a device problem.",
+                                                    "pattern":  "camera_missing|camera_device_problem"
+                                                },
+                                                {
+                                                    "id":  "camera_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "camera_test",
+                                                    "weight":  1,
+                                                    "description":  "Camera active test reports camera failure.",
+                                                    "pattern":  "camera_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "interface_audio_speaker",
+                         "name":  "Audio and Speaker Subsystem",
+                         "category":  "InterfaceFRU",
+                         "replaceable":  true,
+                         "description":  "Detected audio subsystem. DeviceCount=2.",
+                         "aliases":  [
+                                         "speaker",
+                                         "audio",
+                                         "sound"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "audio_device_error",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  0.6,
+                                                    "description":  "Audio device is missing or reporting a device problem.",
+                                                    "pattern":  "audio_missing|audio_device_problem"
+                                                },
+                                                {
+                                                    "id":  "speaker_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "audio_test",
+                                                    "weight":  1,
+                                                    "description":  "Audio active test reports speaker output failure.",
+                                                    "pattern":  "speaker_failed|left_channel_failed|right_channel_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "interface_usb_controller",
+                         "name":  "USB Interface Controller",
+                         "category":  "InterfaceFRU",
+                         "replaceable":  true,
+                         "description":  "Detected USB interface subsystem. ControllerCount=4.",
+                         "aliases":  [
+                                         "usb",
+                                         "type-c",
+                                         "interface",
+                                         "io"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "usb_enum_failure_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "USB enumeration or Type-C errors appear in system logs.",
+                                                    "pattern":  "usb|device not recognized|hub|ucmucsi|type-c"
+                                                },
+                                                {
+                                                    "id":  "usb_active_test_failed",
+                                                    "evidence_type":  "active_test",
+                                                    "source":  "usb_test",
+                                                    "weight":  1,
+                                                    "description":  "USB active test reports port failure.",
+                                                    "pattern":  "usb_port_failed"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "compute_cpu0_13th_gen_intel_r_core_tm_i9_13980hx",
+                         "name":  "Compute Module - 13th Gen Intel(R) Core(TM) i9-13980HX",
+                         "category":  "ComputeFRU",
+                         "replaceable":  true,
+                         "description":  "Detected compute module. Cores=24; LogicalProcessors=32; Status=OK.",
+                         "aliases":  [
+                                         "cpu",
+                                         "processor",
+                                         "compute"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "compute_cpu0_13th_gen_intel_r_core_tm_i9_13980hx_whea_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.8,
+                                                    "description":  "Processor or WHEA hardware errors appear in logs.",
+                                                    "pattern":  "whea|machine check|processor|thermal throttling"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "thermal_cooling_subsystem",
+                         "name":  "Cooling and Thermal Subsystem",
+                         "category":  "ThermalFRU",
+                         "replaceable":  true,
+                         "description":  "Logical thermal FRU. Windows often does not expose the physical fan as a separate WMI FRU.",
+                         "aliases":  [
+                                         "fan",
+                                         "cooling",
+                                         "thermal"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "thermal_throttling_metric",
+                                                    "evidence_type":  "metric_threshold",
+                                                    "source":  "thermal_metrics",
+                                                    "weight":  0.9,
+                                                    "description":  "CPU or GPU is frequently thermal throttled.",
+                                                    "metric":  "thermal_throttle_ratio",
+                                                    "operator":  "\u003e",
+                                                    "threshold":  0.2
+                                                },
+                                                {
+                                                    "id":  "thermal_kernel_power_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.7,
+                                                    "description":  "Thermal or unexpected power events appear in system logs.",
+                                                    "pattern":  "thermal|kernel-power|overheat|throttle"
+                                                }
+                                            ]
+                     },
+                     {
+                         "id":  "mainboard",
+                         "name":  "ASUSTeK COMPUTER INC. FX607JV",
+                         "category":  "MainboardFRU",
+                         "replaceable":  true,
+                         "description":  "Detected main system board.",
+                         "aliases":  [
+                                         "mainboard",
+                                         "motherboard",
+                                         "system board"
+                                     ],
+                         "evidence_rules":  [
+                                                {
+                                                    "id":  "mainboard_multi_bus_failure",
+                                                    "evidence_type":  "device_state",
+                                                    "source":  "device_inventory",
+                                                    "weight":  0.8,
+                                                    "description":  "Multiple independent onboard buses or devices fail together.",
+                                                    "pattern":  "multi_bus_failure|pci_problem|acpi_problem"
+                                                },
+                                                {
+                                                    "id":  "mainboard_whea_log",
+                                                    "evidence_type":  "log_pattern",
+                                                    "source":  "system_event_log",
+                                                    "weight":  0.6,
+                                                    "description":  "Low-level platform or bus errors appear in system logs.",
+                                                    "pattern":  "whea|acpi|pci express|firmware"
+                                                }
+                                            ]
+                     }
+                 ]
+}

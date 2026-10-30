@@ -1,0 +1,1007 @@
+﻿{
+    "schema_version":  "1.0",
+    "generated_at":  "2026-06-28T19:31:07",
+    "window_hours":  6,
+    "collection_status":  {
+                              "system.computer":  {
+                                                      "status":  "collected",
+                                                      "error":  ""
+                                                  },
+                              "system.bios":  {
+                                                  "status":  "collected",
+                                                  "error":  ""
+                                              },
+                              "system.baseboard":  {
+                                                       "status":  "collected",
+                                                       "error":  ""
+                                                   },
+                              "system.os":  {
+                                                "status":  "collected",
+                                                "error":  ""
+                                            },
+                              "system.processors":  {
+                                                        "status":  "collected",
+                                                        "error":  ""
+                                                    },
+                              "inventory.pnp_devices":  {
+                                                            "status":  "collected",
+                                                            "error":  ""
+                                                        },
+                              "logs.system":  {
+                                                  "status":  "collected",
+                                                  "error":  ""
+                                              },
+                              "logs.application":  {
+                                                       "status":  "collected",
+                                                       "error":  ""
+                                                   },
+                              "battery.static_data":  {
+                                                          "status":  "failed",
+                                                          "error":  "常规故障 "
+                                                      },
+                              "battery.full_charged_capacity":  {
+                                                                    "status":  "collected",
+                                                                    "error":  ""
+                                                                },
+                              "battery.cycle_count":  {
+                                                          "status":  "collected",
+                                                          "error":  ""
+                                                      },
+                              "battery.status_data":  {
+                                                          "status":  "collected",
+                                                          "error":  ""
+                                                      },
+                              "battery.win32_battery":  {
+                                                            "status":  "collected",
+                                                            "error":  ""
+                                                        },
+                              "battery.portable_battery":  {
+                                                               "status":  "collected",
+                                                               "error":  ""
+                                                           },
+                              "storage.disk_drive":  {
+                                                         "status":  "collected",
+                                                         "error":  ""
+                                                     },
+                              "storage.physical_disk_health":  {
+                                                                   "status":  "collected",
+                                                                   "error":  ""
+                                                               },
+                              "storage.reliability_counter":  {
+                                                                  "status":  "failed",
+                                                                  "error":  "无法从客户端中访问 CIM 资源。"
+                                                              },
+                              "storage.logical_disks":  {
+                                                            "status":  "collected",
+                                                            "error":  ""
+                                                        },
+                              "memory.physical_memory":  {
+                                                             "status":  "collected",
+                                                             "error":  ""
+                                                         },
+                              "network.adapters":  {
+                                                       "status":  "collected",
+                                                       "error":  ""
+                                                   },
+                              "network.statistics":  {
+                                                         "status":  "collected",
+                                                         "error":  ""
+                                                     },
+                              "network.wlan_interfaces":  {
+                                                              "status":  "collected",
+                                                              "error":  ""
+                                                          },
+                              "display.video_controllers":  {
+                                                                "status":  "collected",
+                                                                "error":  ""
+                                                            },
+                              "input.keyboards":  {
+                                                      "status":  "collected",
+                                                      "error":  ""
+                                                  },
+                              "audio.sound_devices":  {
+                                                          "status":  "collected",
+                                                          "error":  ""
+                                                      },
+                              "usb.controllers":  {
+                                                      "status":  "collected",
+                                                      "error":  ""
+                                                  },
+                              "thermal.acpi_zones":  {
+                                                         "status":  "failed",
+                                                         "error":  "拒绝访问 "
+                                                     },
+                              "crash_dump.minidump":  {
+                                                          "status":  "collected",
+                                                          "error":  ""
+                                                      },
+                              "crash_dump.memory_dump":  {
+                                                             "status":  "failed",
+                                                             "error":  "找不到路径“C:\\Windows\\MEMORY.DMP”，因为该路径不存在。"
+                                                         }
+                          },
+    "collection_baseline":  {
+                                "version":  "1.0",
+                                "strategy":  "FRU evidence baseline",
+                                "layers":  [
+                                               "inventory",
+                                               "metrics",
+                                               "logs",
+                                               "active_tests"
+                                           ],
+                                "required_runtime_sections":  [
+                                                                  "system",
+                                                                  "bios",
+                                                                  "mainboard",
+                                                                  "battery",
+                                                                  "power",
+                                                                  "storage",
+                                                                  "memory",
+                                                                  "network",
+                                                                  "display",
+                                                                  "input",
+                                                                  "camera",
+                                                                  "audio",
+                                                                  "usb",
+                                                                  "thermal",
+                                                                  "performance",
+                                                                  "device_inventory",
+                                                                  "events",
+                                                                  "tests"
+                                                              ],
+                                "fru_scope":  {
+                                                  "power":  [
+                                                                "power_adapter",
+                                                                "battery_pack",
+                                                                "motherboard charging path"
+                                                            ],
+                                                  "storage":  [
+                                                                  "m2_ssd_module"
+                                                              ],
+                                                  "compute":  [
+                                                                  "ram_module",
+                                                                  "motherboard CPU/GPU path"
+                                                              ],
+                                                  "communication":  [
+                                                                        "wlan_module",
+                                                                        "bluetooth logical adapter"
+                                                                    ],
+                                                  "thermal":  [
+                                                                  "fan_module",
+                                                                  "heat_sink"
+                                                              ],
+                                                  "display":  [
+                                                                  "display_panel_module",
+                                                                  "motherboard GPU path"
+                                                              ],
+                                                  "input":  [
+                                                                "keyboard_module",
+                                                                "touchpad_module"
+                                                            ],
+                                                  "sensor":  [
+                                                                 "camera_module"
+                                                             ],
+                                                  "interface":  [
+                                                                    "speaker_module",
+                                                                    "led_board",
+                                                                    "io_board"
+                                                                ],
+                                                  "mainboard":  [
+                                                                    "motherboard"
+                                                                ]
+                                              }
+                            },
+    "system":  {
+                   "computer_name":  "GONGBINGLAN",
+                   "manufacturer":  "ASUSTeK COMPUTER INC.",
+                   "model":  "ASUS TUF Gaming F16 FX607JV_FX607JV",
+                   "pc_system_type":  2,
+                   "os_caption":  "Microsoft Windows 11 家庭版 中文版",
+                   "os_version":  "10.0.26200",
+                   "last_boot_time":  "2026-06-25T15:22:39"
+               },
+    "bios":  {
+                 "version":  "FX607JV.314",
+                 "release_date":  "2025-02-05T08:00:00"
+             },
+    "mainboard":  {
+                      "present":  true,
+                      "manufacturer":  "ASUSTeK COMPUTER INC.",
+                      "product":  "FX607JV"
+                  },
+    "battery":  {
+                    "present":  true,
+                    "estimated_charge_remaining":  86,
+                    "battery_status":  2,
+                    "status":  "OK",
+                    "design_capacity_mwh":  null,
+                    "full_charged_capacity_mwh":  74875,
+                    "full_charge_capacity_ratio":  null,
+                    "cycle_count":  0,
+                    "voltage_millivolts":  16309,
+                    "charge_rate":  0,
+                    "discharge_rate":  0,
+                    "charging":  false,
+                    "discharging":  false
+                },
+    "power":  {
+                  "ac_line_status":  true,
+                  "source":  "AC",
+                  "adapter_wattage":  null,
+                  "usb_c_pd_status":  "present",
+                  "power_online":  true,
+                  "charging":  false,
+                  "discharging":  false,
+                  "charge_rate":  0,
+                  "discharge_rate":  0,
+                  "voltage_millivolts":  16309,
+                  "portable_battery_count":  0,
+                  "power_device_count":  5,
+                  "power_devices":  [
+                                        {
+                                            "present":  true,
+                                            "name":  "Microsoft ACPI 兼容的控制方法电池",
+                                            "status":  "OK",
+                                            "pnp_class":  "Battery",
+                                            "problem_code":  0
+                                        },
+                                        {
+                                            "present":  true,
+                                            "name":  "UCM-UCSI ACPI 设备",
+                                            "status":  "OK",
+                                            "pnp_class":  "UCM",
+                                            "problem_code":  0
+                                        },
+                                        {
+                                            "present":  true,
+                                            "name":  "Microsoft ACPI-Compliant System",
+                                            "status":  "OK",
+                                            "pnp_class":  "System",
+                                            "problem_code":  0
+                                        },
+                                        {
+                                            "present":  true,
+                                            "name":  "Intel(R) Power Engine Plug-in",
+                                            "status":  "OK",
+                                            "pnp_class":  "System",
+                                            "problem_code":  0
+                                        },
+                                        {
+                                            "present":  true,
+                                            "name":  "Microsoft AC 适配器",
+                                            "status":  "OK",
+                                            "pnp_class":  "Battery",
+                                            "problem_code":  0
+                                        }
+                                    ],
+                  "usb_c_power_devices":  [
+                                              {
+                                                  "present":  true,
+                                                  "name":  "UCM-UCSI ACPI 设备",
+                                                  "status":  "OK",
+                                                  "pnp_class":  "UCM",
+                                                  "problem_code":  0
+                                              }
+                                          ]
+              },
+    "storage":  {
+                    "drives":  [
+                                   {
+                                       "present":  true,
+                                       "model":  "NVMe WD PC SN560 SDDPNQE-1T00-1102",
+                                       "interface_type":  "SCSI",
+                                       "size_bytes":  1024203640320,
+                                       "status":  "OK",
+                                       "health_status":  "Healthy",
+                                       "operational_status":  "OK",
+                                       "temperature_celsius":  null,
+                                       "wear":  null
+                                   }
+                               ],
+                    "volumes":  [
+                                    {
+                                        "device_id":  "C:",
+                                        "size_bytes":  214748696576,
+                                        "free_bytes":  65695928320,
+                                        "free_percent":  30.59
+                                    },
+                                    {
+                                        "device_id":  "D:",
+                                        "size_bytes":  779720060928,
+                                        "free_bytes":  503759572992,
+                                        "free_percent":  64.61
+                                    }
+                                ]
+                },
+    "memory":  {
+                   "total_physical_bytes":  16779862016,
+                   "available_bytes":  5183008768,
+                   "modules":  [
+                                   {
+                                       "present":  true,
+                                       "locator":  "Controller1-ChannelA-DIMM0",
+                                       "capacity_bytes":  17179869184,
+                                       "speed_mhz":  5600,
+                                       "manufacturer":  "Micron Technology"
+                                   }
+                               ]
+               },
+    "network":  {
+                    "wlan":  {
+                                 "signal_percent":  null
+                             },
+                    "adapters":  [
+                                     {
+                                         "present":  true,
+                                         "name":  "本地连接",
+                                         "interface_description":  "Sangfor aTrust VNIC",
+                                         "status":  "Up",
+                                         "link_speed":  "1 Gbps",
+                                         "received_packet_errors":  null,
+                                         "outbound_discarded_packets":  null
+                                     },
+                                     {
+                                         "present":  true,
+                                         "name":  "以太网",
+                                         "interface_description":  "Realtek PCIe GbE Family Controller",
+                                         "status":  "Disconnected",
+                                         "link_speed":  "0 bps",
+                                         "received_packet_errors":  0,
+                                         "outbound_discarded_packets":  0
+                                     },
+                                     {
+                                         "present":  true,
+                                         "name":  "WLAN",
+                                         "interface_description":  "Intel(R) Wi-Fi 6 AX201 160MHz",
+                                         "status":  "Up",
+                                         "link_speed":  "200 Mbps",
+                                         "received_packet_errors":  0,
+                                         "outbound_discarded_packets":  0
+                                     },
+                                     {
+                                         "present":  true,
+                                         "name":  "蓝牙网络连接",
+                                         "interface_description":  "Bluetooth Device (Personal Area Network)",
+                                         "status":  "Disconnected",
+                                         "link_speed":  "3 Mbps",
+                                         "received_packet_errors":  null,
+                                         "outbound_discarded_packets":  null
+                                     }
+                                 ]
+                },
+    "display":  {
+                    "adapters":  [
+                                     {
+                                         "name":  "Sharing Monitor",
+                                         "status":  "OK",
+                                         "driver_version":  "11.28.49.440",
+                                         "video_processor":  null
+                                     },
+                                     {
+                                         "name":  "GameViewer Virtual Display Adapter",
+                                         "status":  "OK",
+                                         "driver_version":  "17.13.25.697",
+                                         "video_processor":  null
+                                     },
+                                     {
+                                         "name":  "NVIDIA GeForce RTX 4060 Laptop GPU",
+                                         "status":  "OK",
+                                         "driver_version":  "32.0.15.9597",
+                                         "video_processor":  "NVIDIA GeForce RTX 4060 Laptop GPU"
+                                     },
+                                     {
+                                         "name":  "Intel(R) UHD Graphics",
+                                         "status":  "OK",
+                                         "driver_version":  "32.0.101.6790",
+                                         "video_processor":  "Intel(R) RaptorLake-S Mobile Graphics Controller"
+                                     }
+                                 ],
+                    "monitors":  [
+                                     {
+                                         "present":  true,
+                                         "name":  "Generic Monitor (V2419Q)",
+                                         "status":  "OK",
+                                         "pnp_class":  "Monitor",
+                                         "problem_code":  0
+                                     },
+                                     {
+                                         "present":  true,
+                                         "name":  "Integrated Monitor (B160QAN02.7 )",
+                                         "status":  "OK",
+                                         "pnp_class":  "Monitor",
+                                         "problem_code":  0
+                                     },
+                                     {
+                                         "present":  true,
+                                         "name":  "WAN Miniport (Network Monitor)",
+                                         "status":  "OK",
+                                         "pnp_class":  "Net",
+                                         "problem_code":  0
+                                     }
+                                 ]
+                },
+    "input":  {
+                  "keyboards":  [
+                                    {
+                                        "present":  true,
+                                        "name":  "增强型(101 或 102 键)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "增强型(101 或 102 键)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "增强型(101 或 102 键)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "增强型(101 或 102 键)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "增强型(101 或 102 键)",
+                                        "status":  "OK"
+                                    }
+                                ],
+                  "touchpad_devices":  [
+                                           {
+                                               "present":  true,
+                                               "name":  "ASUS Precision Touchpad",
+                                               "status":  "OK",
+                                               "pnp_class":  "HIDClass",
+                                               "problem_code":  0
+                                           },
+                                           {
+                                               "present":  true,
+                                               "name":  "I2C HID 设备",
+                                               "status":  "OK",
+                                               "pnp_class":  "HIDClass",
+                                               "problem_code":  0
+                                           },
+                                           {
+                                               "present":  true,
+                                               "name":  "I2C HID 设备",
+                                               "status":  "OK",
+                                               "pnp_class":  "HIDClass",
+                                               "problem_code":  0
+                                           }
+                                       ]
+              },
+    "camera":  {
+                   "devices":  [
+                                   {
+                                       "present":  true,
+                                       "name":  "USB2.0 HD UVC WebCam",
+                                       "status":  "OK",
+                                       "pnp_class":  "Camera",
+                                       "problem_code":  0
+                                   }
+                               ]
+               },
+    "audio":  {
+                  "devices":  [
+                                  {
+                                      "present":  true,
+                                      "name":  "Realtek High Definition Audio",
+                                      "status":  "OK",
+                                      "manufacturer":  "Realtek"
+                                  },
+                                  {
+                                      "present":  true,
+                                      "name":  "适用于蓝牙® 音频的英特尔® 智音技术",
+                                      "status":  "OK",
+                                      "manufacturer":  "Intel(R) Corporation"
+                                  },
+                                  {
+                                      "present":  true,
+                                      "name":  "NVIDIA High Definition Audio",
+                                      "status":  "OK",
+                                      "manufacturer":  "NVIDIA"
+                                  },
+                                  {
+                                      "present":  true,
+                                      "name":  "适用于 USB 音频的英特尔® 智音技术",
+                                      "status":  "OK",
+                                      "manufacturer":  "Intel(R) Corporation"
+                                  },
+                                  {
+                                      "present":  true,
+                                      "name":  "NVIDIA Virtual Audio Device (Wave Extensible) (WDM)",
+                                      "status":  "OK",
+                                      "manufacturer":  "NVIDIA"
+                                  },
+                                  {
+                                      "present":  true,
+                                      "name":  "NVIDIA Broadcast",
+                                      "status":  "OK",
+                                      "manufacturer":  "NVIDIA"
+                                  }
+                              ]
+              },
+    "usb":  {
+                "controllers":  [
+                                    {
+                                        "present":  true,
+                                        "name":  "Intel(R) USB 3.10 可扩展主机控制器 - 1.10 (Microsoft)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "Intel(R) USB 3.20 可扩展主机控制器 - 1.20 (Microsoft)",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "Lebo Virtual USB Monitor",
+                                        "status":  "OK"
+                                    },
+                                    {
+                                        "present":  true,
+                                        "name":  "Virtual MonitorX",
+                                        "status":  "OK"
+                                    }
+                                ],
+                "problem_devices":  [
+
+                                    ]
+            },
+    "thermal":  {
+                    "thermal_zone_count":  0,
+                    "zones":  [
+
+                              ]
+                },
+    "performance":  {
+                        "cpu_load_percent":  3
+                    },
+    "device_inventory":  {
+                             "problem_device_count":  0,
+                             "problem_devices":  [
+
+                                                 ]
+                         },
+    "crash_dump":  {
+                       "available":  true,
+                       "source":  "self_after_reboot",
+                       "dump_files":  [
+                                          {
+                                              "kind":  "minidump",
+                                              "path":  "C:\\Windows\\Minidump\\030826-23453-01.dmp",
+                                              "size_bytes":  23333939,
+                                              "modified_at":  "2026-03-08T14:30:14"
+                                          },
+                                          {
+                                              "kind":  "minidump",
+                                              "path":  "C:\\Windows\\Minidump\\012026-21000-01.dmp",
+                                              "size_bytes":  19407719,
+                                              "modified_at":  "2026-01-20T16:55:12"
+                                          }
+                                      ],
+                       "minidumps":  [
+                                         {
+                                             "path":  "C:\\Windows\\Minidump\\030826-23453-01.dmp",
+                                             "size_bytes":  23333939,
+                                             "modified_at":  "2026-03-08T14:30:14"
+                                         },
+                                         {
+                                             "path":  "C:\\Windows\\Minidump\\012026-21000-01.dmp",
+                                             "size_bytes":  19407719,
+                                             "modified_at":  "2026-01-20T16:55:12"
+                                         }
+                                     ],
+                       "memory_dump":  {
+
+                                       },
+                       "bugcheck_code":  "",
+                       "probable_modules":  [
+
+                                            ],
+                       "limitation":  "",
+                       "reason":  "",
+                       "next_action":  ""
+                   },
+    "events":  {
+                   "total_warning_error_count":  16,
+                   "collection":  {
+                                      "mode":  "recent_hours",
+                                      "fault_time":  null,
+                                      "start_time":  "2026-06-28T13:31:07",
+                                      "end_time":  "2026-06-28T19:31:07",
+                                      "before_fault_minutes":  null,
+                                      "after_fault_minutes":  null,
+                                      "max_system_events":  200,
+                                      "max_application_events":  50,
+                                      "logs":  [
+                                                   "System",
+                                                   "Application"
+                                               ],
+                                      "level_filter":  [
+                                                           "Error",
+                                                           "Warning"
+                                                       ],
+                                      "system_event_count":  16,
+                                      "application_event_count":  0
+                                  },
+                   "power":  {
+                                 "error_count":  0,
+                                 "warning_count":  0,
+                                 "total_count":  0,
+                                 "samples":  [
+
+                                             ],
+                                 "rules":  {
+                                               "provider_patterns":  [
+                                                                         "Kernel-Power",
+                                                                         "ACPI",
+                                                                         "Battery",
+                                                                         "UcmUcsi",
+                                                                         "USB",
+                                                                         "Kernel-PnP"
+                                                                     ],
+                                               "message_patterns":  [
+                                                                        "battery",
+                                                                        "charging",
+                                                                        "adapter",
+                                                                        "power",
+                                                                        "usb-c",
+                                                                        "type-c",
+                                                                        "ucmucsi"
+                                                                    ]
+                                           }
+                             },
+                   "storage":  {
+                                   "error_count":  0,
+                                   "warning_count":  0,
+                                   "total_count":  0,
+                                   "samples":  [
+
+                                               ],
+                                   "rules":  {
+                                                 "provider_patterns":  [
+                                                                           "Disk",
+                                                                           "Ntfs",
+                                                                           "storahci",
+                                                                           "stornvme",
+                                                                           "iaStor"
+                                                                       ],
+                                                 "message_patterns":  [
+                                                                          "disk",
+                                                                          "ntfs",
+                                                                          "bad block",
+                                                                          "io error",
+                                                                          "I/O"
+                                                                      ]
+                                             }
+                               },
+                   "memory":  {
+                                  "error_count":  0,
+                                  "warning_count":  0,
+                                  "total_count":  0,
+                                  "samples":  [
+
+                                              ],
+                                  "rules":  {
+                                                "provider_patterns":  [
+                                                                          "BugCheck",
+                                                                          "WHEA-Logger",
+                                                                          "MemoryDiagnostics"
+                                                                      ],
+                                                "message_patterns":  [
+                                                                         "memory",
+                                                                         "page fault",
+                                                                         "bugcheck",
+                                                                         "WHEA"
+                                                                     ]
+                                            }
+                              },
+                   "network":  {
+                                   "error_count":  0,
+                                   "warning_count":  0,
+                                   "total_count":  0,
+                                   "samples":  [
+
+                                               ],
+                                   "rules":  {
+                                                 "provider_patterns":  [
+                                                                           "WLAN",
+                                                                           "Netwtw",
+                                                                           "Tcpip",
+                                                                           "Bluetooth",
+                                                                           "e1",
+                                                                           "rt"
+                                                                       ],
+                                                 "message_patterns":  [
+                                                                          "wifi",
+                                                                          "wi-fi",
+                                                                          "wlan",
+                                                                          "bluetooth",
+                                                                          "adapter",
+                                                                          "link",
+                                                                          "network"
+                                                                      ]
+                                             }
+                               },
+                   "display":  {
+                                   "error_count":  0,
+                                   "warning_count":  0,
+                                   "total_count":  0,
+                                   "samples":  [
+
+                                               ],
+                                   "rules":  {
+                                                 "provider_patterns":  [
+                                                                           "Display",
+                                                                           "nvlddmkm",
+                                                                           "igfx",
+                                                                           "dxgkrnl",
+                                                                           "amdkmdag"
+                                                                       ],
+                                                 "message_patterns":  [
+                                                                          "display",
+                                                                          "graphics",
+                                                                          "gpu",
+                                                                          "monitor"
+                                                                      ]
+                                             }
+                               },
+                   "input":  {
+                                 "error_count":  0,
+                                 "warning_count":  0,
+                                 "total_count":  0,
+                                 "samples":  [
+
+                                             ],
+                                 "rules":  {
+                                               "provider_patterns":  [
+                                                                         "HID",
+                                                                         "i8042",
+                                                                         "kbd",
+                                                                         "mou",
+                                                                         "I2C"
+                                                                     ],
+                                               "message_patterns":  [
+                                                                        "keyboard",
+                                                                        "touchpad",
+                                                                        "hid",
+                                                                        "i2c"
+                                                                    ]
+                                           }
+                             },
+                   "camera":  {
+                                  "error_count":  0,
+                                  "warning_count":  0,
+                                  "total_count":  0,
+                                  "samples":  [
+
+                                              ],
+                                  "rules":  {
+                                                "provider_patterns":  [
+                                                                          "Camera",
+                                                                          "FrameServer",
+                                                                          "USBVideo"
+                                                                      ],
+                                                "message_patterns":  [
+                                                                         "camera",
+                                                                         "webcam"
+                                                                     ]
+                                            }
+                              },
+                   "audio":  {
+                                 "error_count":  0,
+                                 "warning_count":  0,
+                                 "total_count":  0,
+                                 "samples":  [
+
+                                             ],
+                                 "rules":  {
+                                               "provider_patterns":  [
+                                                                         "Audio",
+                                                                         "Realtek",
+                                                                         "IntcAudio"
+                                                                     ],
+                                               "message_patterns":  [
+                                                                        "audio",
+                                                                        "speaker",
+                                                                        "sound"
+                                                                    ]
+                                           }
+                             },
+                   "usb_io":  {
+                                  "error_count":  0,
+                                  "warning_count":  0,
+                                  "total_count":  0,
+                                  "samples":  [
+
+                                              ],
+                                  "rules":  {
+                                                "provider_patterns":  [
+                                                                          "USB",
+                                                                          "UcmUcsi",
+                                                                          "Kernel-PnP"
+                                                                      ],
+                                                "message_patterns":  [
+                                                                         "usb",
+                                                                         "type-c",
+                                                                         "device not recognized",
+                                                                         "hub"
+                                                                     ]
+                                            }
+                              },
+                   "thermal":  {
+                                   "error_count":  0,
+                                   "warning_count":  16,
+                                   "total_count":  16,
+                                   "samples":  [
+                                                   {
+                                                       "time_created":  "2026-06-28T16:53:42",
+                                                       "log_name":  "System",
+                                                       "provider":  "Microsoft-Windows-Kernel-Processor-Power",
+                                                       "event_id":  37,
+                                                       "level":  "警告",
+                                                       "level_number":  3,
+                                                       "matched_provider_patterns":  [
+                                                                                         "Kernel-Processor-Power"
+                                                                                     ],
+                                                       "matched_message_patterns":  [
+
+                                                                                    ],
+                                                       "message_excerpt":  "组 0 中处理器 31 的速度受系统固件限制。自上次报告以来，处理器已经处于该低性能状态 178132 秒。"
+                                                   },
+                                                   {
+                                                       "time_created":  "2026-06-28T16:53:41",
+                                                       "log_name":  "System",
+                                                       "provider":  "Microsoft-Windows-Kernel-Processor-Power",
+                                                       "event_id":  37,
+                                                       "level":  "警告",
+                                                       "level_number":  3,
+                                                       "matched_provider_patterns":  [
+                                                                                         "Kernel-Processor-Power"
+                                                                                     ],
+                                                       "matched_message_patterns":  [
+
+                                                                                    ],
+                                                       "message_excerpt":  "组 0 中处理器 30 的速度受系统固件限制。自上次报告以来，处理器已经处于该低性能状态 178132 秒。"
+                                                   },
+                                                   {
+                                                       "time_created":  "2026-06-28T16:53:41",
+                                                       "log_name":  "System",
+                                                       "provider":  "Microsoft-Windows-Kernel-Processor-Power",
+                                                       "event_id":  37,
+                                                       "level":  "警告",
+                                                       "level_number":  3,
+                                                       "matched_provider_patterns":  [
+                                                                                         "Kernel-Processor-Power"
+                                                                                     ],
+                                                       "matched_message_patterns":  [
+
+                                                                                    ],
+                                                       "message_excerpt":  "组 0 中处理器 29 的速度受系统固件限制。自上次报告以来，处理器已经处于该低性能状态 178132 秒。"
+                                                   },
+                                                   {
+                                                       "time_created":  "2026-06-28T16:53:41",
+                                                       "log_name":  "System",
+                                                       "provider":  "Microsoft-Windows-Kernel-Processor-Power",
+                                                       "event_id":  37,
+                                                       "level":  "警告",
+                                                       "level_number":  3,
+                                                       "matched_provider_patterns":  [
+                                                                                         "Kernel-Processor-Power"
+                                                                                     ],
+                                                       "matched_message_patterns":  [
+
+                                                                                    ],
+                                                       "message_excerpt":  "组 0 中处理器 28 的速度受系统固件限制。自上次报告以来，处理器已经处于该低性能状态 178132 秒。"
+                                                   },
+                                                   {
+                                                       "time_created":  "2026-06-28T16:53:41",
+                                                       "log_name":  "System",
+                                                       "provider":  "Microsoft-Windows-Kernel-Processor-Power",
+                                                       "event_id":  37,
+                                                       "level":  "警告",
+                                                       "level_number":  3,
+                                                       "matched_provider_patterns":  [
+                                                                                         "Kernel-Processor-Power"
+                                                                                     ],
+                                                       "matched_message_patterns":  [
+
+                                                                                    ],
+                                                       "message_excerpt":  "组 0 中处理器 27 的速度受系统固件限制。自上次报告以来，处理器已经处于该低性能状态 178132 秒。"
+                                                   }
+                                               ],
+                                   "rules":  {
+                                                 "provider_patterns":  [
+                                                                           "Thermal",
+                                                                           "Kernel-Processor-Power",
+                                                                           "Kernel-Power"
+                                                                       ],
+                                                 "message_patterns":  [
+                                                                          "thermal",
+                                                                          "overheat",
+                                                                          "throttle",
+                                                                          "fan"
+                                                                      ]
+                                             }
+                               },
+                   "mainboard":  {
+                                     "error_count":  0,
+                                     "warning_count":  0,
+                                     "total_count":  0,
+                                     "samples":  [
+
+                                                 ],
+                                     "rules":  {
+                                                   "provider_patterns":  [
+                                                                             "WHEA-Logger",
+                                                                             "ACPI",
+                                                                             "Kernel-PnP",
+                                                                             "PCI"
+                                                                         ],
+                                                   "message_patterns":  [
+                                                                            "whea",
+                                                                            "acpi",
+                                                                            "pci",
+                                                                            "firmware"
+                                                                        ]
+                                               }
+                                 },
+                   "unclassified":  {
+                                        "error_count":  0,
+                                        "warning_count":  0,
+                                        "total_count":  0,
+                                        "samples":  [
+
+                                                    ]
+                                    }
+               },
+    "tests":  {
+                  "power":  {
+                                "adapter_detected":  "not_run",
+                                "discharge_test_result":  "not_run"
+                            },
+                  "storage":  {
+                                  "short_self_test":  "not_run",
+                                  "read_write_test":  "not_run"
+                              },
+                  "memory":  {
+                                 "extended_test_result":  "not_run"
+                             },
+                  "network":  {
+                                  "ping_gateway_result":  "not_run",
+                                  "bluetooth_pairing_result":  "not_run"
+                              },
+                  "thermal":  {
+                                  "fan_response_result":  "not_run",
+                                  "load_temperature_curve":  "not_run"
+                              },
+                  "display":  {
+                                  "external_ok_internal_failed":  "not_run",
+                                  "pixel_or_backlight_result":  "not_run"
+                              },
+                  "camera":  {
+                                 "capture_result":  "not_run"
+                             },
+                  "input":  {
+                                "keyboard_matrix_result":  "not_run",
+                                "touchpad_gesture_result":  "not_run"
+                            },
+                  "audio":  {
+                                "left_right_speaker_result":  "not_run"
+                            },
+                  "led":  {
+                              "visual_result":  "not_run"
+                          },
+                  "io":  {
+                             "usb_port_result":  "not_run",
+                             "audio_jack_result":  "not_run",
+                             "lan_port_result":  "not_run"
+                         },
+                  "mainboard":  {
+                                    "multi_bus_stress_result":  "not_run"
+                                }
+              }
+}

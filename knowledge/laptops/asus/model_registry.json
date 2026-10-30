@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "device_type": "laptop",
+  "vendor": "ASUS",
+  "description": "Official-document-backed ASUS laptop FRU profile registry.",
+  "entries": [
+    {
+      "id": "asus_tianxuan5_pro_tuf_gaming_f16_2024_fx607j_fa607p",
+      "vendor": "ASUS",
+      "device_type": "laptop",
+      "model_family": "FX607J / FA607P",
+      "display_name": "ASUS Tianxuan 5 Pro / TUF Gaming F16 2024 family",
+      "config_path": "configs/asus_tianxuan5_fx607jv.json",
+      "manufacturer_patterns": [
+        "asus",
+        "asustek",
+        "asustek computer inc"
+      ],
+      "model_patterns": [
+        "fx607j",
+        "fx607ji",
+        "fx607ju",
+        "fx607jv",
+        "fx607jir",
+        "fx607jvr",
+        "fa607p",
+        "fa607pi",
+        "fa607pu"
+      ],
+      "market_name_patterns": [
+        "天选5",
+        "天选5pro",
+        "天选5 pro",
+        "天选5 Pro",
+        "tuf gaming f16",
+        "tuf gaming a16"
+      ],
+      "official_sources": [
+        "https://www.asus.com.cn/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-f16-2024/techspec/",
+        "https://www.asus.com/us/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-f16-2024/helpdesk_service_guide?model2Name=FX607JV",
+        "https://dlcdnets.asus.com/pub/ASUS/GamingNB/FX607JI/E23104_FX607J_FA607P_SM_WEB.pdf"
+      ],
+      "notes": [
+        "The FX607JI/JU/JV customer self repair guide and FX607J/FA607P service manual are treated as the official FRU basis for this family.",
+        "CPU, integrated graphics, discrete laptop GPU, USB controller, LAN controller, and Bluetooth PAN are evidence sources mapped to motherboard, I/O board, or WLAN module rather than standalone target FRUs."
+      ]
+    }
+  ]
+}

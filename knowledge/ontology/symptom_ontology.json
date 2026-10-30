@@ -1,0 +1,30 @@
+{
+  "version": "0.1",
+  "description": "Symptom ontology linking user-visible faults to evidence and candidate roots.",
+  "symptoms": [
+    {
+      "id": "bsod",
+      "name": "Blue screen / bugcheck",
+      "priority_evidence": ["minidump", "bugcheck_code", "whea_event", "recent_driver_change"],
+      "candidate_roots": ["driver_or_os_fault", "memory_subsystem", "storage_fru", "motherboard", "display_driver_path"]
+    },
+    {
+      "id": "charging_failure",
+      "name": "Charging or power-source failure",
+      "priority_evidence": ["battery_metric", "ac_line_status", "UCSI_event", "adapter_swap_test"],
+      "candidate_roots": ["external_environment_fault", "battery_pack", "firmware_or_config_fault", "motherboard"]
+    },
+    {
+      "id": "no_network",
+      "name": "Network unavailable or unstable",
+      "priority_evidence": ["adapter_inventory", "network_event", "gateway_ping", "driver_version"],
+      "candidate_roots": ["driver_or_os_fault", "external_environment_fault", "wlan_module", "connector_or_interconnect_fault"]
+    },
+    {
+      "id": "black_screen",
+      "name": "Black screen or display output failure",
+      "priority_evidence": ["external_display_test", "display_event", "panel_test", "driver_version"],
+      "candidate_roots": ["display_panel_module", "driver_or_os_fault", "motherboard", "connector_or_interconnect_fault"]
+    }
+  ]
+}

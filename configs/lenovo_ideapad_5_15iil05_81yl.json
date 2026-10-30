@@ -1,0 +1,780 @@
+{
+  "device_type": "laptop",
+  "display_name": "Lenovo IdeaPad 5 15IIL05 / 81YL",
+  "version": "1.0",
+  "description": "Pre-FRU profile for Lenovo model 81YL, mapped to the IdeaPad 5 15IIL05 family. The profile uses repair-level FRUs where practical and treats soldered or board-integrated components as evidence for their parent subsystem.",
+  "metadata": {
+    "vendor": "Lenovo",
+    "market_name": "IdeaPad 5 15IIL05",
+    "model": "81YL",
+    "model_family": "IdeaPad 5 15IIL05",
+    "baseboard_observed": "LNVNB161216",
+    "source_device_scan": "configs/detected_device.json",
+    "official_sources": [
+      "https://psref.lenovo.com/",
+      "https://pcsupport.lenovo.com/",
+      "https://download.lenovo.com/consumer/mobiles_pub/ideapad_5_14_15iil05_hmm.pdf"
+    ],
+    "notes": [
+      "This pre-FRU profile is calibrated from the local Lenovo 81YL scan and the Lenovo IdeaPad 5 14/15IIL05 platform documentation family.",
+      "The detected Intel Core i5-1035G1 CPU, Intel UHD Graphics, NVIDIA GeForce MX350, USB controller, and platform controllers are integrated onto the motherboard and are not modeled as standalone target FRUs.",
+      "The detected Samsung memory is modeled as a memory subsystem because this family commonly uses soldered onboard memory; active memory failures should increase motherboard/system-board confidence unless a replaceable memory module is verified for a specific submodel."
+    ]
+  },
+  "fru_list": [
+    {
+      "id": "power_adapter",
+      "name": "Lenovo AC Power Adapter",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "External Lenovo AC adapter or USB-C power adapter, depending on the exact submodel bundle.",
+      "aliases": [
+        "adapter",
+        "charger",
+        "power brick",
+        "ac adapter",
+        "usb-c charger"
+      ],
+      "source_refs": [
+        "lenovo_platform_spec_power_adapter",
+        "hardware_scan_power_context"
+      ],
+      "evidence_rules": [
+        {
+          "id": "adapter_power_event_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "ac adapter|charging|kernel-power|power source|usb-c|ucmucsi",
+          "weight": 0.5,
+          "description": "Power-source, charging, USB-C, or Kernel-Power events appear in system logs."
+        },
+        {
+          "id": "adapter_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "power_test",
+          "pattern": "adapter_not_detected|adapter_wattage_abnormal|usb_c_pd_failed",
+          "weight": 1.0,
+          "description": "Active power test reports adapter detection, wattage, or USB-C PD abnormality."
+        }
+      ],
+      "serviceability": {
+        "type": "external_part",
+        "level": "external",
+        "replacement_target": "power_adapter",
+        "parent_assembly": null,
+        "requires_disassembly": false,
+        "cost_level": "low",
+        "confidence_required": "medium",
+        "action": "Swap with a known-good Lenovo-compatible AC/USB-C adapter before opening the laptop.",
+        "notes": [
+          "External accessories are repair actions but not internal FRUs."
+        ]
+      }
+    },
+    {
+      "id": "battery_pack",
+      "name": "Battery Pack L19M3PF6",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal Lenovo battery pack. The local scan detected battery model L19M3PF6 with normal current status.",
+      "aliases": [
+        "battery",
+        "bms",
+        "power",
+        "L19M3PF6"
+      ],
+      "source_refs": [
+        "hardware_scan_battery",
+        "lenovo_hmm_battery"
+      ],
+      "evidence_rules": [
+        {
+          "id": "battery_health_low",
+          "evidence_type": "metric_threshold",
+          "source": "battery_status",
+          "metric": "full_charge_capacity_ratio",
+          "operator": "<",
+          "threshold": 0.6,
+          "weight": 0.9,
+          "description": "Battery full-charge capacity is far below design capacity."
+        },
+        {
+          "id": "battery_charge_failure_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "battery|charging|acpi|kernel-power",
+          "weight": 0.6,
+          "description": "Battery, charging, ACPI, or Kernel-Power events appear in system logs."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "battery_pack",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace the battery pack after charge/discharge and adapter-path evidence is sufficient.",
+        "notes": [
+          "Exclude adapter, EC/BIOS, and motherboard charging path first."
+        ]
+      }
+    },
+    {
+      "id": "m2_ssd_module",
+      "name": "M.2 NVMe SSD Module",
+      "category": "StorageFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "M.2 NVMe storage module. The local scan detected an SK hynix HFM512GDHTNI-87A0B 512GB drive.",
+      "aliases": [
+        "ssd",
+        "nvme",
+        "disk",
+        "storage",
+        "sk hynix",
+        "HFM512GDHTNI"
+      ],
+      "source_refs": [
+        "hardware_scan_storage",
+        "lenovo_platform_spec_storage"
+      ],
+      "evidence_rules": [
+        {
+          "id": "ssd_smart_warning",
+          "evidence_type": "health_warning",
+          "source": "smart",
+          "pattern": "critical_warning|media_errors|predictive failure|bad block|nvme",
+          "weight": 1.0,
+          "description": "SMART, NVMe, or storage health data reports a warning."
+        },
+        {
+          "id": "ssd_io_error_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "disk|ntfs|storahci|stornvme|bad block|io error|reset to device",
+          "weight": 0.8,
+          "description": "Storage-related errors appear in system logs."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "field_replaceable",
+        "replacement_target": "m2_ssd_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace or reseat the M.2 SSD after SMART/NVMe and read-write evidence supports storage failure.",
+        "notes": [
+          "Back up or recover data before replacement."
+        ]
+      }
+    },
+    {
+      "id": "ram_module",
+      "name": "Onboard Memory Subsystem",
+      "category": "ComputeFRU",
+      "replaceable": false,
+      "diagnosis_role": "subsystem",
+      "verification_status": "model_inferred",
+      "description": "Soldered onboard memory subsystem. Local inventory shows two Samsung memory entries, but this family commonly exposes onboard memory rather than a separately replaceable SO-DIMM FRU.",
+      "aliases": [
+        "ram",
+        "memory",
+        "dimm",
+        "onboard memory",
+        "soldered memory"
+      ],
+      "source_refs": [
+        "hardware_scan_memory",
+        "lenovo_platform_spec_memory"
+      ],
+      "evidence_rules": [
+        {
+          "id": "memory_bugcheck_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "memory management|page fault|bugcheck|whea",
+          "weight": 0.8,
+          "description": "Crash logs contain memory-related patterns."
+        },
+        {
+          "id": "memory_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "memory_test",
+          "pattern": "failed",
+          "weight": 1.0,
+          "description": "Active memory test reports failures."
+        }
+      ],
+      "serviceability": {
+        "type": "non_replaceable_subsystem",
+        "level": "not_individually_replaceable",
+        "replacement_target": null,
+        "parent_assembly": "motherboard",
+        "requires_disassembly": true,
+        "cost_level": "high",
+        "confidence_required": "high",
+        "action": "Use memory evidence to support motherboard/system-board diagnosis; do not recommend standalone RAM replacement for this profile.",
+        "notes": [
+          "This model commonly exposes soldered onboard memory."
+        ]
+      }
+    },
+    {
+      "id": "wlan_module",
+      "name": "WLAN and Bluetooth Module",
+      "category": "CommunicationFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Wireless communication module. The local scan detected Intel(R) Wireless-AC 9560 and a Bluetooth PAN logical adapter; Bluetooth is mapped to this WLAN module.",
+      "aliases": [
+        "wifi",
+        "wi-fi",
+        "wlan",
+        "bluetooth",
+        "wireless",
+        "network",
+        "Intel Wireless-AC 9560"
+      ],
+      "source_refs": [
+        "hardware_scan_network",
+        "lenovo_platform_spec_wireless"
+      ],
+      "evidence_rules": [
+        {
+          "id": "wlan_driver_reset_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "wlan|wifi|wi-fi|netwtw|bluetooth|adapter reset|disconnect",
+          "weight": 0.7,
+          "description": "Wireless adapter reset, disconnect, or Bluetooth-related events appear in logs."
+        },
+        {
+          "id": "wlan_device_missing",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "wireless_missing|bluetooth_missing|network_missing|adapter_disabled|device_problem",
+          "weight": 1.0,
+          "description": "WLAN or Bluetooth device is missing, disabled, or reporting a device problem."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "wlan_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace or reseat the WLAN module only after excluding router, antenna, driver, and OS network stack.",
+        "notes": [
+          "Antenna cable and driver faults can mimic WLAN module failure."
+        ]
+      }
+    },
+    {
+      "id": "fan_module",
+      "name": "Cooling Fan Module",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Active cooling fan assembly. Windows may not expose fan RPM, so confirmation depends on thermal behavior and active fan checks.",
+      "aliases": [
+        "fan",
+        "cpu fan",
+        "cooling"
+      ],
+      "source_refs": [
+        "lenovo_hmm_fan",
+        "hardware_scan_thermal"
+      ],
+      "evidence_rules": [
+        {
+          "id": "fan_response_abnormal",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "fan_response_error",
+          "operator": ">",
+          "threshold": 0.5,
+          "weight": 0.9,
+          "description": "Fan speed or acoustic response does not respond normally to high temperature."
+        },
+        {
+          "id": "fan_error_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "fan|thermal|overheat|throttle|kernel-power",
+          "weight": 0.7,
+          "description": "Fan, thermal, overheat, throttling, or unexpected power events appear in logs."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "fan_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace the fan module after fan response evidence and thermal context support fan failure.",
+        "notes": [
+          "Clean vents and inspect dust before replacement."
+        ]
+      }
+    },
+    {
+      "id": "heat_sink",
+      "name": "Heat Sink Assembly",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Heat sink and thermal pipe assembly. Diagnosis relies on thermal response because the heat sink itself exposes no OS-visible sensor.",
+      "aliases": [
+        "heat sink",
+        "heatsink",
+        "thermal module",
+        "thermal pipe"
+      ],
+      "source_refs": [
+        "lenovo_hmm_heat_sink"
+      ],
+      "evidence_rules": [
+        {
+          "id": "heatsink_thermal_throttling",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "thermal_throttle_ratio",
+          "operator": ">",
+          "threshold": 0.2,
+          "weight": 0.8,
+          "description": "CPU or GPU is frequently thermal throttled even when fan response is present."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "heat_sink",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Service or replace the heat sink after load temperature curve evidence supports poor heat transfer.",
+        "notes": [
+          "Thermal paste, dust, screw pressure, and fan control must be excluded."
+        ]
+      }
+    },
+    {
+      "id": "motherboard",
+      "name": "Lenovo System Board LNVNB161216",
+      "category": "MainboardFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Main system board. CPU, integrated graphics, discrete MX350 GPU, memory subsystem, USB controllers, and other soldered platform functions should map here unless a specific submodel exposes a separate FRU.",
+      "aliases": [
+        "mainboard",
+        "motherboard",
+        "system board",
+        "cpu",
+        "gpu",
+        "mx350",
+        "intel uhd",
+        "usb controller",
+        "LNVNB161216"
+      ],
+      "source_refs": [
+        "hardware_scan_mainboard",
+        "lenovo_hmm_system_board"
+      ],
+      "evidence_rules": [
+        {
+          "id": "motherboard_whea_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "whea|machine check|pci express|acpi|firmware|processor|graphics",
+          "weight": 0.8,
+          "description": "Low-level platform, CPU, GPU, PCIe, ACPI, or firmware hardware errors appear in system logs."
+        },
+        {
+          "id": "motherboard_multi_bus_failure",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "multi_bus_failure|pci_problem|acpi_problem|usb_problem|memory_test_failed",
+          "weight": 1.0,
+          "description": "Multiple independent onboard buses or soldered subsystems fail together."
+        }
+      ],
+      "serviceability": {
+        "type": "serviceable_assembly",
+        "level": "assembly_replaceable",
+        "replacement_target": "motherboard",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "high",
+        "confidence_required": "high",
+        "action": "Replace the system board only after excluding endpoint FRUs, firmware, OS, and external causes.",
+        "notes": [
+          "High-cost assembly; requires strong multi-source evidence."
+        ]
+      }
+    },
+    {
+      "id": "display_panel_module",
+      "name": "LCD Display Panel Module",
+      "category": "DisplayFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal LCD panel module. GPU devices are evidence for the motherboard/display path rather than a standalone replaceable GPU target.",
+      "aliases": [
+        "display",
+        "screen",
+        "panel",
+        "edp",
+        "lcd",
+        "monitor"
+      ],
+      "source_refs": [
+        "hardware_scan_display_panel",
+        "lenovo_platform_spec_display"
+      ],
+      "evidence_rules": [
+        {
+          "id": "display_driver_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "display|graphics|nvlddmkm|igfx|dxgkrnl|panel|monitor",
+          "weight": 0.4,
+          "description": "Display or graphics driver errors appear in logs."
+        },
+        {
+          "id": "internal_display_failed_external_ok",
+          "evidence_type": "active_test",
+          "source": "display_test",
+          "pattern": "external_ok_internal_failed",
+          "weight": 1.0,
+          "description": "External display works while internal display test fails."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "display_panel_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "high",
+        "confidence_required": "high",
+        "action": "Replace the display panel only after external-display and panel/backlight tests isolate the internal panel path.",
+        "notes": [
+          "eDP cable, GPU path, and driver faults can mimic panel failure."
+        ]
+      }
+    },
+    {
+      "id": "camera_module",
+      "name": "Camera Module",
+      "category": "SensorFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal camera module.",
+      "aliases": [
+        "camera",
+        "webcam",
+        "uvc"
+      ],
+      "source_refs": [
+        "hardware_scan_camera",
+        "lenovo_platform_spec_camera"
+      ],
+      "evidence_rules": [
+        {
+          "id": "camera_device_missing",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "camera_missing|camera_device_problem",
+          "weight": 0.9,
+          "description": "Camera device is missing or reporting a device problem."
+        },
+        {
+          "id": "camera_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "camera_test",
+          "pattern": "camera_failed|capture_failed",
+          "weight": 1.0,
+          "description": "Camera active test reports capture failure."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "camera_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "medium",
+        "action": "Replace the camera module after capture test and privacy/driver checks isolate camera hardware.",
+        "notes": [
+          "Privacy settings and permissions are common non-FRU causes."
+        ]
+      }
+    },
+    {
+      "id": "keyboard_module",
+      "name": "Keyboard Module",
+      "category": "InputFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal keyboard module, including keyboard matrix and optional backlight path depending on exact submodel.",
+      "aliases": [
+        "keyboard",
+        "keyboard membrane",
+        "backlight keyboard",
+        "hid"
+      ],
+      "source_refs": [
+        "hardware_scan_keyboard",
+        "lenovo_hmm_keyboard"
+      ],
+      "evidence_rules": [
+        {
+          "id": "keyboard_hid_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "keyboard|hid|i2c hid",
+          "weight": 0.6,
+          "description": "Keyboard or HID errors appear in system logs."
+        },
+        {
+          "id": "keyboard_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "input_test",
+          "pattern": "key_failed|keyboard_matrix_failed",
+          "weight": 1.0,
+          "description": "Keyboard active test reports failed keys."
+        }
+      ],
+      "serviceability": {
+        "type": "serviceable_assembly",
+        "level": "assembly_replaceable",
+        "replacement_target": "keyboard_module",
+        "parent_assembly": "upper_case_or_keyboard_deck",
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Repair or replace the keyboard/deck path after key-matrix test and connector checks.",
+        "notes": [
+          "Exact service part may be a keyboard deck or upper-case assembly."
+        ]
+      }
+    },
+    {
+      "id": "touchpad_module",
+      "name": "Touchpad Module",
+      "category": "InputFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal touchpad module.",
+      "aliases": [
+        "touchpad",
+        "trackpad",
+        "i2c hid",
+        "hid"
+      ],
+      "source_refs": [
+        "hardware_scan_touchpad",
+        "lenovo_hmm_touchpad"
+      ],
+      "evidence_rules": [
+        {
+          "id": "touchpad_hid_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "touchpad|trackpad|i2c hid|hid",
+          "weight": 0.7,
+          "description": "Touchpad or I2C HID errors appear in system logs."
+        },
+        {
+          "id": "touchpad_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "input_test",
+          "pattern": "touchpad_failed|gesture_failed|click_failed",
+          "weight": 1.0,
+          "description": "Touchpad active test reports movement, click, or gesture failure."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "touchpad_module",
+        "parent_assembly": "keyboard_deck",
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace or reseat the touchpad after gesture/click test and I2C HID evidence supports hardware failure.",
+        "notes": [
+          "I2C controller and driver faults can mimic touchpad failure."
+        ]
+      }
+    },
+    {
+      "id": "speaker_module",
+      "name": "Speaker Module",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Internal left/right speaker assembly.",
+      "aliases": [
+        "speaker",
+        "audio",
+        "sound"
+      ],
+      "source_refs": [
+        "hardware_scan_audio",
+        "lenovo_hmm_speakers"
+      ],
+      "evidence_rules": [
+        {
+          "id": "speaker_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "audio_test",
+          "pattern": "speaker_failed|left_channel_failed|right_channel_failed|distortion",
+          "weight": 1.0,
+          "description": "Audio active test reports speaker output failure."
+        },
+        {
+          "id": "audio_device_problem",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "audio_missing|audio_device_problem",
+          "weight": 0.5,
+          "description": "Audio device is missing or reporting a device problem; this is supporting evidence only."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "speaker_module",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "low",
+        "confidence_required": "medium",
+        "action": "Replace speakers after left/right playback test excludes mute, output selection, driver, and codec path.",
+        "notes": [
+          "Audio stack and output routing are frequent non-FRU causes."
+        ]
+      }
+    },
+    {
+      "id": "led_board",
+      "name": "Power Button and Status LED Board",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "Small power-button/status-LED path. Some submodels integrate this path into the upper case or system board; use visual and active tests to separate it.",
+      "aliases": [
+        "led board",
+        "status led",
+        "power button",
+        "power led"
+      ],
+      "source_refs": [
+        "lenovo_hmm_power_button_led"
+      ],
+      "evidence_rules": [
+        {
+          "id": "led_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "led_test",
+          "pattern": "led_failed|power_button_failed|status_led_failed",
+          "weight": 1.0,
+          "description": "LED or power-button active test reports failure."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "led_board",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "low",
+        "confidence_required": "medium",
+        "action": "Replace the LED/power-button board after visual test and cable checks isolate the board.",
+        "notes": [
+          "EC firmware and motherboard control signal can mimic LED board failure."
+        ]
+      }
+    },
+    {
+      "id": "io_board",
+      "name": "I/O Ports and Cable Path",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "model_inferred",
+      "description": "External port path covering USB, USB-C, audio jack, card-reader, and side I/O cabling where the exact submodel exposes a separable board or cable. Integrated USB controllers remain motherboard evidence.",
+      "aliases": [
+        "io board",
+        "i/o board",
+        "usb",
+        "type-c",
+        "audio jack",
+        "card reader",
+        "hdmi",
+        "port"
+      ],
+      "source_refs": [
+        "hardware_scan_usb",
+        "lenovo_platform_spec_ports",
+        "lenovo_hmm_io_path"
+      ],
+      "evidence_rules": [
+        {
+          "id": "io_board_port_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "usb|device not recognized|hub|ucmucsi|type-c|audio|card reader|hdmi|link down",
+          "weight": 0.7,
+          "description": "I/O port, USB, Type-C, audio, card-reader, or HDMI-related errors appear in logs."
+        },
+        {
+          "id": "io_board_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "port_test",
+          "pattern": "usb_port_failed|type_c_failed|audio_jack_failed|card_reader_failed|hdmi_failed",
+          "weight": 1.0,
+          "description": "Port active test reports an I/O path-related failure."
+        }
+      ],
+      "serviceability": {
+        "type": "replaceable_fru",
+        "level": "service_center_replaceable",
+        "replacement_target": "io_board",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "medium",
+        "confidence_required": "high",
+        "action": "Replace or reseat I/O board/cable path after per-port tests isolate the local I/O path.",
+        "notes": [
+          "External device, cable, dock, driver, and motherboard controller faults must be excluded."
+        ]
+      }
+    }
+  ]
+}

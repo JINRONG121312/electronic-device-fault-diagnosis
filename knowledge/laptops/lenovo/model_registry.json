@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "device_type": "laptop",
+  "vendor": "Lenovo",
+  "description": "Lenovo laptop FRU profile registry.",
+  "entries": [
+    {
+      "id": "lenovo_ideapad_5_15iil05_81yl",
+      "vendor": "Lenovo",
+      "device_type": "laptop",
+      "model_family": "IdeaPad 5 15IIL05 / 81YL",
+      "display_name": "Lenovo IdeaPad 5 15IIL05 family",
+      "config_path": "configs/lenovo_ideapad_5_15iil05_81yl.json",
+      "manufacturer_patterns": [
+        "lenovo",
+        "lenovo group limited"
+      ],
+      "model_patterns": [
+        "81yl",
+        "15iil05",
+        "ideapad 5 15iil05",
+        "ideapad 5-15iil05",
+        "ideapad 5 15itl05",
+        "lnvnb161216"
+      ],
+      "market_name_patterns": [
+        "ideapad 5",
+        "ideapad-5",
+        "xiaoxin 15",
+        "小新 15",
+        "小新15"
+      ],
+      "official_sources": [
+        "https://psref.lenovo.com/",
+        "https://pcsupport.lenovo.com/",
+        "https://download.lenovo.com/consumer/mobiles_pub/ideapad_5_14_15iil05_hmm.pdf"
+      ],
+      "notes": [
+        "The local scan identifies manufacturer LENOVO, model 81YL, baseboard LNVNB161216, Intel Core i5-1035G1, NVIDIA GeForce MX350, SK hynix 512GB NVMe SSD, and Intel Wireless-AC 9560.",
+        "CPU, iGPU, dGPU, onboard memory, USB controllers, and platform controllers are treated as evidence for the system board rather than standalone target FRUs."
+      ]
+    }
+  ]
+}

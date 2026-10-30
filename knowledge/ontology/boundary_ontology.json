@@ -1,0 +1,59 @@
+{
+  "schema": "hardware_software_boundary_ontology.v1",
+  "description": "Ontology for assessing whether electronic-device faults are software-side, hardware-side, or located on the hardware/software boundary.",
+  "boundary_types": [
+    {
+      "id": "software_side",
+      "name": "Software-side fault",
+      "definition": "The evidence is dominated by driver, operating-system, configuration, data, or filesystem context without confirmatory hardware failure evidence.",
+      "typical_actions": ["rollback_or_update_driver", "repair_os_or_filesystem", "restore_configuration"]
+    },
+    {
+      "id": "hardware_side",
+      "name": "Hardware-side fault",
+      "definition": "The evidence is dominated by hardware health, device-state, SMART/WHEA, or active-test failure signals.",
+      "typical_actions": ["run_confirmatory_hardware_test", "map_to_serviceability_object", "repair_or_replace_after_confirmation"]
+    },
+    {
+      "id": "hardware_software_boundary",
+      "name": "Hardware/software boundary fault",
+      "definition": "The evidence spans software or firmware control and physical hardware or interface-path signals, so software stack and hardware endpoint must be isolated before service action.",
+      "typical_actions": ["run_boundary_isolation_test", "collect_fault_window_logs", "compare_driver_firmware_hardware_events"]
+    },
+    {
+      "id": "mixed_or_uncertain",
+      "name": "Mixed or uncertain boundary",
+      "definition": "Evidence is insufficient, contradictory, or only symptom-level, so boundary attribution is not reliable.",
+      "typical_actions": ["collect_missing_evidence", "run_low_risk_active_tests"]
+    }
+  ],
+  "boundary_roles": [
+    {"id": "software_side", "examples": ["driver", "operating_system", "configuration", "filesystem"]},
+    {"id": "firmware_control", "examples": ["BIOS", "EC", "ACPI", "UCSI", "secure_boot"]},
+    {"id": "interface_path", "examples": ["PCIe", "USB", "I2C", "SATA", "NVMe", "connector", "cable"]},
+    {"id": "hardware_endpoint", "examples": ["SSD", "battery", "memory", "display_panel", "WLAN_module", "motherboard"]},
+    {"id": "external_environment", "examples": ["adapter", "router", "dock", "outlet", "ambient_environment"]}
+  ],
+  "active_boundary_tests": [
+    {
+      "id": "collect_minidump_and_correlate_with_whea_driver_storage_events",
+      "symptoms": ["bsod"],
+      "purpose": "Separate driver/OS crash context from WHEA, storage, memory, or board-level evidence."
+    },
+    {
+      "id": "run_known_good_adapter_test_and_collect_acpi_ucsi_battery_state",
+      "symptoms": ["charging_failure"],
+      "purpose": "Separate adapter/battery/connector faults from ACPI, UCSI, firmware, and power-policy faults."
+    },
+    {
+      "id": "run_external_display_test_and_compare_driver_event_timeline",
+      "symptoms": ["black_screen"],
+      "purpose": "Separate display panel/backlight/path faults from display driver and boot-state faults."
+    },
+    {
+      "id": "run_gateway_ping_driver_state_and_hotspot_comparison",
+      "symptoms": ["no_network"],
+      "purpose": "Separate WLAN hardware, driver, OS network stack, router, and external environment faults."
+    }
+  ]
+}

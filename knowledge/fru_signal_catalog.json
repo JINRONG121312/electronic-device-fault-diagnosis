@@ -1,0 +1,316 @@
+{
+  "version": "1.0",
+  "profile_id": "asus_tianxuan5_pro_fx607jv",
+  "description": "Signal catalog for FRU-level diagnosis. required signals are needed for initial localization; enhancing signals improve confidence; active_test signals require user or repair-station action.",
+  "signal_levels": {
+    "required": "Minimum evidence for initial FRU-level localization.",
+    "enhancing": "Additional evidence that improves confidence or separates adjacent FRUs.",
+    "active_test": "Interactive or offline test used when passive OS inventory is insufficient."
+  },
+  "fru_signals": [
+    {
+      "fru_id": "power_adapter",
+      "required": [
+        {"key": "power.ac_line_status", "source": "battery_status", "description": "Whether the system reports external AC power."},
+        {"key": "events.power.error_count", "source": "windows_event_log", "description": "Power-source, charging, ACPI, or Kernel-Power errors."}
+      ],
+      "enhancing": [
+        {"key": "battery.charge_rate_estimate", "source": "battery_status", "description": "Estimated charging behavior when AC is connected."},
+        {"key": "power.adapter_wattage", "source": "active_power_test", "description": "Detected adapter wattage, if supported by firmware or active tester."}
+      ],
+      "active_test": [
+        {"key": "tests.power.adapter_detected", "description": "Check whether the adapter is detected and provides expected wattage."}
+      ],
+      "replacement_limitations": [
+        "Bad wall outlet, power strip, USB-C cable, or dock can mimic adapter failure.",
+        "Motherboard charging IC, DC-in path, or Type-C power-delivery fault can remain after replacing the adapter."
+      ]
+    },
+    {
+      "fru_id": "battery_pack",
+      "required": [
+        {"key": "battery.present", "source": "Win32_Battery", "description": "Whether a battery is detected."},
+        {"key": "battery.estimated_charge_remaining", "source": "Win32_Battery", "description": "Current battery charge percentage."},
+        {"key": "battery.status", "source": "Win32_Battery", "description": "Battery status reported by firmware."}
+      ],
+      "enhancing": [
+        {"key": "battery.design_capacity_mwh", "source": "root/wmi BatteryStaticData", "description": "Original design capacity."},
+        {"key": "battery.full_charged_capacity_mwh", "source": "root/wmi BatteryFullChargedCapacity", "description": "Current full-charge capacity."},
+        {"key": "battery.full_charge_capacity_ratio", "source": "derived", "description": "Full-charge capacity divided by design capacity."},
+        {"key": "battery.cycle_count", "source": "root/wmi BatteryCycleCount", "description": "Battery cycle count, if exposed."},
+        {"key": "events.power.error_count", "source": "windows_event_log", "description": "Battery, ACPI, or Kernel-Power related events."}
+      ],
+      "active_test": [
+        {"key": "tests.power.discharge_test_result", "description": "Controlled discharge/charge check."}
+      ],
+      "replacement_limitations": [
+        "Charging circuit, EC firmware, BIOS battery calibration, or adapter fault may persist after battery replacement.",
+        "Operating-system power policy or driver fault can cause false battery symptoms."
+      ]
+    },
+    {
+      "fru_id": "m2_ssd_module",
+      "required": [
+        {"key": "storage.drives[].present", "source": "Win32_DiskDrive", "description": "Whether the drive is detected."},
+        {"key": "storage.drives[].status", "source": "Win32_DiskDrive", "description": "Basic drive status."},
+        {"key": "events.storage.error_count", "source": "windows_event_log", "description": "Disk, Ntfs, storahci, stornvme, or bad-block events."}
+      ],
+      "enhancing": [
+        {"key": "storage.drives[].health_status", "source": "Get-PhysicalDisk", "description": "Storage health status."},
+        {"key": "storage.drives[].operational_status", "source": "Get-PhysicalDisk", "description": "Storage operational status."},
+        {"key": "storage.drives[].temperature_celsius", "source": "Get-StorageReliabilityCounter", "description": "Drive temperature, if exposed."},
+        {"key": "storage.drives[].wear", "source": "Get-StorageReliabilityCounter", "description": "SSD wear indicator, if exposed."},
+        {"key": "storage.volumes[].free_percent", "source": "Win32_LogicalDisk", "description": "Free-space ratio used to separate capacity issues from drive faults."}
+      ],
+      "active_test": [
+        {"key": "tests.storage.short_self_test", "description": "SMART/NVMe short self-test."},
+        {"key": "tests.storage.read_write_test", "description": "Controlled read/write latency and error test."}
+      ],
+      "replacement_limitations": [
+        "M.2 slot, PCIe lane, motherboard, firmware, filesystem corruption, or OS image damage may remain after replacing the SSD.",
+        "Data loss is not repaired by hardware replacement unless backups or recovery are available."
+      ]
+    },
+    {
+      "fru_id": "ram_module",
+      "required": [
+        {"key": "memory.modules[].present", "source": "Win32_PhysicalMemory", "description": "Detected memory modules and slots."},
+        {"key": "events.memory.error_count", "source": "windows_event_log", "description": "BugCheck, WHEA, memory-management, or memory-diagnostic events."}
+      ],
+      "enhancing": [
+        {"key": "memory.total_physical_bytes", "source": "Win32_ComputerSystem", "description": "Total physical memory."},
+        {"key": "memory.available_bytes", "source": "Win32_OperatingSystem", "description": "Available memory."},
+        {"key": "memory.modules[].speed_mhz", "source": "Win32_PhysicalMemory", "description": "Memory speed."},
+        {"key": "memory.modules[].locator", "source": "Win32_PhysicalMemory", "description": "Slot locator."}
+      ],
+      "active_test": [
+        {"key": "tests.memory.extended_test_result", "description": "Windows Memory Diagnostic or MemTest-style offline result."}
+      ],
+      "replacement_limitations": [
+        "Memory slot, CPU memory controller, BIOS timing, or motherboard fault can remain after replacing the RAM module.",
+        "Driver bugs can produce memory-like crashes without RAM failure."
+      ]
+    },
+    {
+      "fru_id": "wlan_module",
+      "required": [
+        {"key": "network.adapters[].present", "source": "Get-NetAdapter/Win32_NetworkAdapter", "description": "Wireless/Bluetooth adapter presence."},
+        {"key": "network.adapters[].status", "source": "Get-NetAdapter", "description": "Adapter status."},
+        {"key": "events.network.error_count", "source": "windows_event_log", "description": "WLAN, Netwtw, Bluetooth, link-flap, or adapter-reset events."}
+      ],
+      "enhancing": [
+        {"key": "network.wlan.signal_percent", "source": "netsh wlan show interfaces", "description": "Wi-Fi signal strength."},
+        {"key": "network.adapters[].link_speed", "source": "Get-NetAdapter", "description": "Reported link speed."},
+        {"key": "network.adapters[].received_packet_errors", "source": "Get-NetAdapterStatistics", "description": "Receive errors."},
+        {"key": "network.adapters[].outbound_discarded_packets", "source": "Get-NetAdapterStatistics", "description": "Outbound discards."}
+      ],
+      "active_test": [
+        {"key": "tests.network.ping_gateway_result", "description": "Gateway ping and packet-loss test."},
+        {"key": "tests.network.bluetooth_pairing_result", "description": "Bluetooth pairing or scan test."}
+      ],
+      "replacement_limitations": [
+        "Router, AP, ISP, antenna cable, driver, OS network stack, or motherboard M.2 E-key slot may remain faulty after WLAN replacement."
+      ]
+    },
+    {
+      "fru_id": "fan_module",
+      "required": [
+        {"key": "thermal.thermal_zone_count", "source": "MSAcpi_ThermalZoneTemperature", "description": "Available ACPI thermal zones."},
+        {"key": "events.thermal.error_count", "source": "windows_event_log", "description": "Thermal, throttling, fan, or unexpected power events."}
+      ],
+      "enhancing": [
+        {"key": "thermal.zones[].temperature_celsius", "source": "MSAcpi_ThermalZoneTemperature", "description": "Thermal zone temperatures, if exposed."},
+        {"key": "performance.cpu_load_percent", "source": "Win32_Processor", "description": "CPU load for interpreting thermal behavior."}
+      ],
+      "active_test": [
+        {"key": "tests.thermal.fan_response_result", "description": "Fan response under controlled load."}
+      ],
+      "replacement_limitations": [
+        "Dust blockage, incorrect thermal paste, heatsink damage, EC fan curve, BIOS, or motherboard fan driver fault may persist after fan replacement."
+      ]
+    },
+    {
+      "fru_id": "heat_sink",
+      "required": [
+        {"key": "events.thermal.error_count", "source": "windows_event_log", "description": "Thermal or throttling events."}
+      ],
+      "enhancing": [
+        {"key": "thermal.zones[].temperature_celsius", "source": "MSAcpi_ThermalZoneTemperature", "description": "Temperature response under load."},
+        {"key": "performance.cpu_load_percent", "source": "Win32_Processor", "description": "Load context for temperature."}
+      ],
+      "active_test": [
+        {"key": "tests.thermal.load_temperature_curve", "description": "Temperature rise and recovery curve under controlled load."}
+      ],
+      "replacement_limitations": [
+        "High ambient temperature, blocked vents, poor assembly, thermal paste, chassis deformation, or fan control problems may remain after heatsink replacement."
+      ]
+    },
+    {
+      "fru_id": "motherboard",
+      "required": [
+        {"key": "mainboard.present", "source": "Win32_BaseBoard", "description": "Baseboard inventory."},
+        {"key": "events.mainboard.error_count", "source": "windows_event_log", "description": "WHEA, ACPI, PCIe, firmware, or multi-bus platform events."},
+        {"key": "device_inventory.problem_device_count", "source": "Win32_PnPEntity", "description": "Number of PnP devices reporting problems."}
+      ],
+      "enhancing": [
+        {"key": "device_inventory.problem_devices[]", "source": "Win32_PnPEntity", "description": "Problem devices with class and error code."},
+        {"key": "events.whea.error_count", "source": "windows_event_log", "description": "Hardware error architecture events."},
+        {"key": "bios.version", "source": "Win32_BIOS", "description": "BIOS version for firmware correlation."}
+      ],
+      "active_test": [
+        {"key": "tests.mainboard.multi_bus_stress_result", "description": "Combined PCIe/USB/network/storage stress test."}
+      ],
+      "replacement_limitations": [
+        "Firmware, BIOS settings, OS image, drivers, external peripherals, liquid corrosion beyond the board, or multiple simultaneous module faults may remain after motherboard replacement."
+      ]
+    },
+    {
+      "fru_id": "display_panel_module",
+      "required": [
+        {"key": "display.monitors[].present", "source": "Win32_PnPEntity Monitor", "description": "Internal or PnP monitor presence."},
+        {"key": "display.monitors[].problem_code", "source": "Win32_PnPEntity Monitor", "description": "Display panel or monitor PnP problem code. Zero means no device-manager problem."},
+        {"key": "events.display.error_count", "source": "windows_event_log", "description": "Display, graphics, dxgkrnl, nvlddmkm, or igfx events."}
+      ],
+      "enhancing": [
+        {"key": "display.adapters[].driver_version", "source": "Win32_VideoController", "description": "Graphics driver version."},
+        {"key": "display.monitors[].status", "source": "Win32_PnPEntity", "description": "Monitor status, if exposed by Windows."}
+      ],
+      "active_test": [
+        {"key": "tests.display.external_ok_internal_failed", "description": "External display works while internal panel fails."},
+        {"key": "tests.display.pixel_or_backlight_result", "description": "Panel, backlight, color, and pixel test."}
+      ],
+      "replacement_limitations": [
+        "GPU, motherboard, eDP cable, driver, OS display stack, or BIOS graphics setting can remain faulty after panel replacement."
+      ]
+    },
+    {
+      "fru_id": "camera_module",
+      "required": [
+        {"key": "camera.devices[].present", "source": "Win32_PnPEntity", "description": "Camera device presence."},
+        {"key": "camera.devices[].problem_code", "source": "Win32_PnPEntity", "description": "Camera PnP problem code. Zero means no device-manager problem."}
+      ],
+      "enhancing": [
+        {"key": "events.camera.error_count", "source": "windows_event_log", "description": "CameraFrameServer, USBVideo, or device events."}
+      ],
+      "active_test": [
+        {"key": "tests.camera.capture_result", "description": "Camera image capture test."}
+      ],
+      "replacement_limitations": [
+        "Privacy setting, camera permission, driver, cable, USB internal bus, or motherboard fault may remain after camera replacement."
+      ]
+    },
+    {
+      "fru_id": "keyboard_module",
+      "required": [
+        {"key": "input.keyboards[].present", "source": "Win32_Keyboard", "description": "Keyboard inventory."},
+        {"key": "events.input.error_count", "source": "windows_event_log", "description": "Keyboard, HID, or I2C HID events."}
+      ],
+      "enhancing": [
+        {"key": "device_inventory.problem_devices[]", "source": "Win32_PnPEntity", "description": "HID problem device details."}
+      ],
+      "active_test": [
+        {"key": "tests.input.keyboard_matrix_result", "description": "Key-by-key input test."}
+      ],
+      "replacement_limitations": [
+        "Keyboard connector, embedded controller, BIOS setting, filter driver, or OS input stack may remain faulty after keyboard replacement."
+      ]
+    },
+    {
+      "fru_id": "touchpad_module",
+      "required": [
+        {"key": "input.touchpad_devices[].present", "source": "Win32_PnPEntity", "description": "Touchpad or I2C HID device presence."},
+        {"key": "events.input.error_count", "source": "windows_event_log", "description": "Touchpad, HID, or I2C HID events."}
+      ],
+      "enhancing": [
+        {"key": "input.touchpad_devices[].problem_code", "source": "Win32_PnPEntity", "description": "Touchpad PnP problem code. Zero means no device-manager problem."}
+      ],
+      "active_test": [
+        {"key": "tests.input.touchpad_gesture_result", "description": "Pointer movement, click, and gesture test."}
+      ],
+      "replacement_limitations": [
+        "I2C controller, keyboard deck cable, BIOS setting, driver, or OS input setting can remain faulty after touchpad replacement."
+      ]
+    },
+    {
+      "fru_id": "speaker_module",
+      "required": [
+        {"key": "audio.devices[].present", "source": "Win32_SoundDevice", "description": "Audio device presence."},
+        {"key": "audio.devices[].status", "source": "Win32_SoundDevice", "description": "Audio device status."}
+      ],
+      "enhancing": [
+        {"key": "events.audio.error_count", "source": "windows_event_log", "description": "Audio service or driver events."}
+      ],
+      "active_test": [
+        {"key": "tests.audio.left_right_speaker_result", "description": "Left/right speaker playback test."}
+      ],
+      "replacement_limitations": [
+        "Muted output, wrong output device, audio driver, audio codec, amplifier path, motherboard, or OS audio service can remain faulty after speaker replacement."
+      ]
+    },
+    {
+      "fru_id": "led_board",
+      "required": [
+        {"key": "events.mainboard.error_count", "source": "windows_event_log", "description": "Platform events that may affect status LEDs."}
+      ],
+      "enhancing": [],
+      "active_test": [
+        {"key": "tests.led.visual_result", "description": "Visual LED status check."}
+      ],
+      "replacement_limitations": [
+        "BIOS/EC firmware, LED cable, motherboard control circuit, or software lighting utility can remain faulty after LED board replacement."
+      ]
+    },
+    {
+      "fru_id": "io_board",
+      "required": [
+        {"key": "usb.controllers[].present", "source": "Win32_USBController", "description": "USB controller presence."},
+        {"key": "events.usb_io.error_count", "source": "windows_event_log", "description": "USB, UcmUcsi, Type-C, audio jack, LAN, or port events."}
+      ],
+      "enhancing": [
+        {"key": "usb.problem_devices[]", "source": "Win32_PnPEntity", "description": "USB problem devices."},
+        {"key": "network.adapters[].status", "source": "Get-NetAdapter", "description": "LAN adapter status if the port is on the I/O path."},
+        {"key": "audio.devices[].status", "source": "Win32_SoundDevice", "description": "Audio jack or audio subsystem status."}
+      ],
+      "active_test": [
+        {"key": "tests.io.usb_port_result", "description": "Per-port USB test."},
+        {"key": "tests.io.audio_jack_result", "description": "Headphone/microphone jack test."},
+        {"key": "tests.io.lan_port_result", "description": "LAN link and throughput test."}
+      ],
+      "replacement_limitations": [
+        "Motherboard-side USB/PCIe controller, cable, driver, OS stack, external device, or dock can remain faulty after I/O board replacement."
+      ]
+    }
+  ],
+  "cross_cutting_non_fru_faults": [
+    {
+      "category": "software_or_os",
+      "examples": ["Windows corruption", "driver conflict", "malware", "bad power policy", "wrong output/input device selection"],
+      "effect": "Module replacement may not change the symptom."
+    },
+    {
+      "category": "firmware_or_configuration",
+      "examples": ["BIOS/EC bug", "wrong BIOS setting", "firmware mismatch", "Secure Boot or device disable setting"],
+      "effect": "The hardware module can be healthy but disabled or mismanaged."
+    },
+    {
+      "category": "interconnect_or_connector",
+      "examples": ["loose cable", "damaged connector", "oxidation", "liquid corrosion", "bad antenna cable"],
+      "effect": "Replacing only the endpoint module may not repair the path."
+    },
+    {
+      "category": "upstream_motherboard_path",
+      "examples": ["PCIe lane fault", "USB controller fault", "charging IC fault", "display eDP path fault", "I2C controller fault"],
+      "effect": "Replacing SSD, Wi-Fi, panel, keyboard, touchpad, or adapter may not solve motherboard-side faults."
+    },
+    {
+      "category": "external_environment",
+      "examples": ["bad router", "weak Wi-Fi signal", "bad wall outlet", "bad peripheral", "bad cable", "blocked vents"],
+      "effect": "The laptop module may be normal while the environment causes the symptom."
+    },
+    {
+      "category": "multi_fault",
+      "examples": ["liquid damage affecting several FRUs", "overvoltage damaging adapter and motherboard", "fall damage affecting panel and cable"],
+      "effect": "Replacing one module can leave another failed module in the chain."
+    }
+  ]
+}

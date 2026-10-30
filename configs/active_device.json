@@ -1,0 +1,587 @@
+{
+  "device_type": "laptop",
+  "display_name": "ASUS Tianxuan 5 Pro / TUF Gaming F16 FX607JV",
+  "version": "1.0",
+  "description": "Model-calibrated FRU profile for ASUS Tianxuan 5 Pro / TUF Gaming F16 FX607JV. This profile keeps only repair-level target FRUs and merges integrated components into their serviceable modules.",
+  "metadata": {
+    "market_name": "ASUS Tianxuan 5 Pro",
+    "official_cn_name": "ASUS Tianxuan 5 Pro Intel Edition",
+    "model": "FX607JV",
+    "model_family": "FX607J",
+    "source_device_scan": "configs/detected_device.json",
+    "official_sources": [
+      "https://www.asus.com.cn/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-f16-2024/techspec/",
+      "https://dlcdnets.asus.com/pub/ASUS/GamingNB/FX607JI/E23104_FX607J_FA607P_SM_WEB.pdf"
+    ],
+    "notes": [
+      "CPU, Intel integrated graphics, NVIDIA laptop GPU, LAN controller, USB controller, and Bluetooth PAN are treated as evidence sources or motherboard/subsystem evidence, not separate target FRUs.",
+      "The official service manual lists service procedures for battery, M.2 SSD, RAM, WLAN, fan, heat sink, motherboard, speakers, LED board, touchpad, display panel, display bezel, and camera module."
+    ],
+    "setup_mode": "known_model_profile",
+    "selected_registry_id": "asus_tianxuan5_pro_tuf_gaming_f16_2024_fx607j_fa607p",
+    "selected_model_family": "FX607J / FA607P",
+    "model_match_score": 110,
+    "model_match_reasons": [
+      "manufacturer matched 'asus'",
+      "model matched 'fx607j'",
+      "market name matched 'tuf gaming f16'"
+    ],
+    "operator_declared_device_type": "laptop",
+    "operator_manufacturer": "ASUSTeK COMPUTER INC.",
+    "operator_model": "ASUS TUF Gaming F16 FX607JV_FX607JV",
+    "scan_manufacturer": "ASUSTeK COMPUTER INC.",
+    "scan_model": "ASUS TUF Gaming F16 FX607JV_FX607JV",
+    "scan_display_name": "ASUSTeK COMPUTER INC. ASUS TUF Gaming F16 FX607JV_FX607JV",
+    "source_scan_path": "configs/detected_device.json",
+    "device_type_verified_by_scan": true
+  },
+  "fru_list": [
+    {
+      "id": "power_adapter",
+      "name": "AC Power Adapter",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_spec",
+      "description": "External ASUS power adapter. The official specification lists 240W or 280W adapter options depending on configuration.",
+      "aliases": [
+        "adapter",
+        "charger",
+        "power brick",
+        "ac adapter"
+      ],
+      "source_refs": [
+        "official_techspec_power_adapter"
+      ],
+      "evidence_rules": [
+        {
+          "id": "adapter_power_event_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "ac adapter|charging|kernel-power|power source",
+          "weight": 0.5,
+          "description": "Power-source or adapter-related events appear in system logs."
+        },
+        {
+          "id": "adapter_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "power_test",
+          "pattern": "adapter_not_detected|adapter_wattage_abnormal",
+          "weight": 1.0,
+          "description": "Active power test reports adapter detection or wattage abnormality."
+        }
+      ],
+      "serviceability": {
+        "type": "external_part",
+        "level": "external",
+        "replacement_target": "power_adapter",
+        "parent_assembly": null,
+        "requires_disassembly": false,
+        "cost_level": "low",
+        "confidence_required": "medium",
+        "action": "Swap with a known-good ASUS-compatible power adapter before opening the laptop.",
+        "notes": [
+          "External accessories are diagnostic and repair targets, but not internal FRUs."
+        ]
+      }
+    },
+    {
+      "id": "battery_pack",
+      "name": "Battery Pack",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal battery pack. The official specification lists a 90Wh 4-cell lithium-ion battery for this model family.",
+      "aliases": [
+        "battery",
+        "bms",
+        "power"
+      ],
+      "source_refs": [
+        "official_techspec_battery",
+        "service_manual_battery"
+      ],
+      "evidence_rules": [
+        {
+          "id": "battery_health_low",
+          "evidence_type": "metric_threshold",
+          "source": "battery_status",
+          "metric": "full_charge_capacity_ratio",
+          "operator": "<",
+          "threshold": 0.6,
+          "weight": 0.9,
+          "description": "Battery full-charge capacity is far below design capacity."
+        },
+        {
+          "id": "battery_charge_failure_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "battery|charging|acpi|kernel-power",
+          "weight": 0.6,
+          "description": "Battery or charging events appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "m2_ssd_module",
+      "name": "M.2 NVMe SSD Module",
+      "category": "StorageFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "M.2 PCIe NVMe SSD module. The official specification lists two M.2 PCIe slots; the current scan detected one installed WD PC SN560 1TB SSD.",
+      "aliases": [
+        "ssd",
+        "nvme",
+        "disk",
+        "storage"
+      ],
+      "source_refs": [
+        "official_techspec_storage_slots",
+        "service_manual_m2_ssd"
+      ],
+      "evidence_rules": [
+        {
+          "id": "ssd_smart_warning",
+          "evidence_type": "health_warning",
+          "source": "smart",
+          "pattern": "critical_warning|media_errors|predictive failure|bad block",
+          "weight": 1.0,
+          "description": "SMART or storage health data reports a warning."
+        },
+        {
+          "id": "ssd_io_error_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "disk|ntfs|storahci|stornvme|bad block|io error",
+          "weight": 0.8,
+          "description": "Storage-related errors appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "ram_module",
+      "name": "DDR5 SO-DIMM RAM Module",
+      "category": "ComputeFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "DDR5 SO-DIMM memory module. The official specification lists two DDR5 SO-DIMM slots and up to 64GB shipment-supported capacity.",
+      "aliases": [
+        "ram",
+        "memory",
+        "dimm",
+        "sodimm"
+      ],
+      "source_refs": [
+        "official_techspec_memory_slots",
+        "service_manual_ram"
+      ],
+      "evidence_rules": [
+        {
+          "id": "memory_bugcheck_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "memory management|page fault|bugcheck|whea",
+          "weight": 0.8,
+          "description": "Crash logs contain memory-related patterns."
+        },
+        {
+          "id": "memory_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "memory_test",
+          "pattern": "failed",
+          "weight": 1.0,
+          "description": "Active memory test reports failures."
+        }
+      ]
+    },
+    {
+      "id": "wlan_module",
+      "name": "WLAN and Bluetooth Module",
+      "category": "CommunicationFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Wireless communication module. Bluetooth PAN is not a separate FRU and is merged into this WLAN module.",
+      "aliases": [
+        "wifi",
+        "wlan",
+        "bluetooth",
+        "wireless",
+        "network"
+      ],
+      "source_refs": [
+        "official_techspec_wireless",
+        "service_manual_wlan"
+      ],
+      "evidence_rules": [
+        {
+          "id": "wlan_driver_reset_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "wlan|wifi|netwtw|bluetooth|adapter reset|disconnect",
+          "weight": 0.7,
+          "description": "Wireless adapter reset, disconnect, or Bluetooth-related events appear in logs."
+        },
+        {
+          "id": "wlan_device_missing",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "wireless_missing|bluetooth_missing|device_problem",
+          "weight": 1.0,
+          "description": "WLAN or Bluetooth device is missing or reporting a device problem."
+        }
+      ]
+    },
+    {
+      "id": "fan_module",
+      "name": "CPU and GPU Fan Module",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "CPU and GPU fan module.",
+      "aliases": [
+        "fan",
+        "cpu fan",
+        "gpu fan",
+        "cooling"
+      ],
+      "source_refs": [
+        "service_manual_fan_module"
+      ],
+      "evidence_rules": [
+        {
+          "id": "fan_response_abnormal",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "fan_response_error",
+          "operator": ">",
+          "threshold": 0.5,
+          "weight": 0.9,
+          "description": "Fan speed does not respond normally to high temperature."
+        },
+        {
+          "id": "fan_error_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "fan|thermal|overheat|throttle",
+          "weight": 0.7,
+          "description": "Fan, thermal, overheat, or throttling events appear in logs."
+        }
+      ]
+    },
+    {
+      "id": "heat_sink",
+      "name": "Heat Sink Assembly",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Heat sink assembly. Diagnosis mainly relies on thermal behavior because the heat sink itself does not usually expose a direct sensor.",
+      "aliases": [
+        "heat sink",
+        "heatsink",
+        "thermal module"
+      ],
+      "source_refs": [
+        "service_manual_heat_sink"
+      ],
+      "evidence_rules": [
+        {
+          "id": "heatsink_thermal_throttling",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "thermal_throttle_ratio",
+          "operator": ">",
+          "threshold": 0.2,
+          "weight": 0.8,
+          "description": "CPU or GPU is frequently thermal throttled."
+        }
+      ]
+    },
+    {
+      "id": "motherboard",
+      "name": "Motherboard Assembly",
+      "category": "MainboardFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Mainboard assembly. CPU, integrated GPU, discrete laptop GPU, LAN controller, and USB controller evidence should map here unless the service manual exposes a separate module.",
+      "aliases": [
+        "mainboard",
+        "motherboard",
+        "system board",
+        "cpu",
+        "gpu",
+        "lan",
+        "usb controller"
+      ],
+      "source_refs": [
+        "service_manual_motherboard"
+      ],
+      "evidence_rules": [
+        {
+          "id": "motherboard_whea_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "whea|machine check|pci express|acpi|firmware",
+          "weight": 0.8,
+          "description": "Low-level platform, CPU, GPU, PCIe, or ACPI hardware errors appear in system logs."
+        },
+        {
+          "id": "motherboard_multi_bus_failure",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "multi_bus_failure|pci_problem|acpi_problem",
+          "weight": 1.0,
+          "description": "Multiple independent onboard buses or devices fail together."
+        }
+      ],
+      "serviceability": {
+        "type": "serviceable_assembly",
+        "level": "assembly_replaceable",
+        "replacement_target": "motherboard",
+        "parent_assembly": null,
+        "requires_disassembly": true,
+        "cost_level": "high",
+        "confidence_required": "high",
+        "action": "Repair or replace the motherboard assembly only after excluding endpoint FRUs, firmware, OS, and external causes.",
+        "notes": [
+          "High-cost assembly; requires strong multi-source evidence."
+        ]
+      }
+    },
+    {
+      "id": "display_panel_module",
+      "name": "Display Panel Module",
+      "category": "DisplayFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal display panel module.",
+      "aliases": [
+        "display",
+        "screen",
+        "panel",
+        "edp",
+        "lvds"
+      ],
+      "source_refs": [
+        "official_techspec_display",
+        "service_manual_display_panel"
+      ],
+      "evidence_rules": [
+        {
+          "id": "display_driver_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "display|graphics|nvlddmkm|amdkmdag|igfx|dxgkrnl",
+          "weight": 0.4,
+          "description": "Display or graphics driver errors appear in logs."
+        },
+        {
+          "id": "internal_display_failed_external_ok",
+          "evidence_type": "active_test",
+          "source": "display_test",
+          "pattern": "external_ok_internal_failed",
+          "weight": 1.0,
+          "description": "External display works while internal display test fails."
+        }
+      ]
+    },
+    {
+      "id": "camera_module",
+      "name": "Camera Module",
+      "category": "SensorFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal camera module.",
+      "aliases": [
+        "camera",
+        "webcam"
+      ],
+      "source_refs": [
+        "official_techspec_camera",
+        "service_manual_camera_module"
+      ],
+      "evidence_rules": [
+        {
+          "id": "camera_device_missing",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "camera_missing|camera_device_problem",
+          "weight": 0.9,
+          "description": "Camera device is missing or reporting a device problem."
+        }
+      ]
+    },
+    {
+      "id": "keyboard_module",
+      "name": "Keyboard Module",
+      "category": "InputFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal keyboard module.",
+      "aliases": [
+        "keyboard",
+        "keyboard membrane",
+        "backlight keyboard"
+      ],
+      "source_refs": [
+        "official_techspec_keyboard",
+        "service_manual_keyboard_module"
+      ],
+      "evidence_rules": [
+        {
+          "id": "keyboard_hid_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "keyboard|hid|i2c hid",
+          "weight": 0.6,
+          "description": "Keyboard or HID errors appear in system logs."
+        },
+        {
+          "id": "keyboard_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "input_test",
+          "pattern": "key_failed",
+          "weight": 1.0,
+          "description": "Keyboard active test reports failed keys."
+        }
+      ]
+    },
+    {
+      "id": "touchpad_module",
+      "name": "Touchpad Module",
+      "category": "InputFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal touchpad module.",
+      "aliases": [
+        "touchpad",
+        "trackpad",
+        "i2c hid"
+      ],
+      "source_refs": [
+        "official_techspec_touchpad",
+        "service_manual_touchpad"
+      ],
+      "evidence_rules": [
+        {
+          "id": "touchpad_hid_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "touchpad|i2c hid|hid",
+          "weight": 0.7,
+          "description": "Touchpad or I2C HID errors appear in system logs."
+        },
+        {
+          "id": "touchpad_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "input_test",
+          "pattern": "touchpad_failed",
+          "weight": 1.0,
+          "description": "Touchpad active test reports a failure."
+        }
+      ]
+    },
+    {
+      "id": "speaker_module",
+      "name": "Speaker Module",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal speaker module.",
+      "aliases": [
+        "speaker",
+        "audio"
+      ],
+      "source_refs": [
+        "official_techspec_audio",
+        "service_manual_speakers"
+      ],
+      "evidence_rules": [
+        {
+          "id": "speaker_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "audio_test",
+          "pattern": "speaker_failed|left_channel_failed|right_channel_failed",
+          "weight": 1.0,
+          "description": "Audio active test reports speaker output failure."
+        }
+      ]
+    },
+    {
+      "id": "led_board",
+      "name": "LED Board",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "Internal LED board.",
+      "aliases": [
+        "led board",
+        "status led"
+      ],
+      "source_refs": [
+        "service_manual_led_board"
+      ],
+      "evidence_rules": [
+        {
+          "id": "led_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "led_test",
+          "pattern": "led_failed",
+          "weight": 1.0,
+          "description": "LED active test reports failure."
+        }
+      ]
+    },
+    {
+      "id": "io_board",
+      "name": "I/O Board",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "diagnosis_role": "target_fru",
+      "verification_status": "official_service_manual",
+      "description": "I/O board. USB, Type-C, HDMI, audio, and LAN symptoms may map here or to the motherboard depending on connector topology.",
+      "aliases": [
+        "io board",
+        "i/o board",
+        "usb",
+        "type-c",
+        "audio jack",
+        "lan connector"
+      ],
+      "source_refs": [
+        "official_techspec_io_ports",
+        "service_manual_io_board"
+      ],
+      "evidence_rules": [
+        {
+          "id": "io_board_port_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "usb|device not recognized|hub|ucmucsi|type-c|audio|ethernet|link down",
+          "weight": 0.7,
+          "description": "I/O port, USB, Type-C, audio, or LAN-related errors appear in logs."
+        },
+        {
+          "id": "io_board_active_test_failed",
+          "evidence_type": "active_test",
+          "source": "port_test",
+          "pattern": "usb_port_failed|audio_jack_failed|lan_port_failed",
+          "weight": 1.0,
+          "description": "Port active test reports an I/O board-related failure."
+        }
+      ]
+    }
+  ]
+}

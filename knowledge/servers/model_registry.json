@@ -1,0 +1,6 @@
+{
+  "version": "0.1",
+  "device_type": "server",
+  "description": "Reserved for server FRU profile registries. Add vendor subfolders or entries during later vertical generalization.",
+  "entries": []
+}

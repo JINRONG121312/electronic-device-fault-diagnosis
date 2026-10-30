@@ -1,0 +1,29 @@
+{
+  "version": "0.1",
+  "rules": [
+    {
+      "id": "linux_kernel_io_error",
+      "evidence_type": "kernel_log",
+      "pattern": "I/O error|blk_update_request|nvme.*reset|ata.*error",
+      "supports": ["storage_fru", "connector_or_interconnect_fault"],
+      "conflicts": [],
+      "weight": 0.75
+    },
+    {
+      "id": "linux_usb_descriptor_failure",
+      "evidence_type": "kernel_log",
+      "pattern": "device descriptor read.*error|unable to enumerate USB device",
+      "supports": ["connector_or_interconnect_fault", "driver_or_os_fault"],
+      "conflicts": [],
+      "weight": 0.65
+    },
+    {
+      "id": "linux_machine_check",
+      "evidence_type": "kernel_log",
+      "pattern": "mce|machine check|hardware error",
+      "supports": ["motherboard", "memory_subsystem"],
+      "conflicts": [],
+      "weight": 0.85
+    }
+  ]
+}

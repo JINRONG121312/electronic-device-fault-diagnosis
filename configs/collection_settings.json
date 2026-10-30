@@ -1,0 +1,18 @@
+{
+  "storage": {
+    "active_runtime_path": "data/runtime_info.json",
+    "history_dir": "data/history",
+    "save_history": true,
+    "filename_template": "runtime_{timestamp}.json",
+    "retention_count": 30
+  },
+  "background": {
+    "enabled": false,
+    "interval_minutes": 30,
+    "collect_runtime": true,
+    "scan_fru": false,
+    "hours": 6,
+    "max_system_events": 200,
+    "max_application_events": 50
+  }
+}

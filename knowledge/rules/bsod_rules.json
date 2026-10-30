@@ -1,0 +1,29 @@
+{
+  "version": "0.1",
+  "rules": [
+    {
+      "bugcheck": "MEMORY_MANAGEMENT",
+      "code": "0x0000001A",
+      "supports": ["memory_subsystem", "driver_or_os_fault", "motherboard"],
+      "next_best_test": "run_memory_extended_test"
+    },
+    {
+      "bugcheck": "WHEA_UNCORRECTABLE_ERROR",
+      "code": "0x00000124",
+      "supports": ["motherboard", "storage_fru", "memory_subsystem"],
+      "next_best_test": "collect_whea_and_storage_health"
+    },
+    {
+      "bugcheck": "VIDEO_TDR_FAILURE",
+      "code": "0x00000116",
+      "supports": ["driver_or_os_fault", "display_panel_module", "motherboard"],
+      "next_best_test": "collect_display_driver_and_external_display_test"
+    },
+    {
+      "bugcheck": "INACCESSIBLE_BOOT_DEVICE",
+      "code": "0x0000007B",
+      "supports": ["storage_fru", "driver_or_os_fault", "data_or_filesystem_fault"],
+      "next_best_test": "collect_storage_health_and_boot_driver_state"
+    }
+  ]
+}

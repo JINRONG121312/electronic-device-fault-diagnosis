@@ -1,0 +1,228 @@
+{
+  "device_type": "laptop",
+  "display_name": "Generic Laptop Computer",
+  "version": "1.0",
+  "description": "FRU profile for a general laptop diagnosis prototype.",
+  "metadata": {
+    "os_family": "windows",
+    "diagnosis_level": "FRU"
+  },
+  "fru_list": [
+    {
+      "id": "battery_pack",
+      "name": "Battery Pack",
+      "category": "PowerFRU",
+      "replaceable": true,
+      "description": "Internal rechargeable battery module.",
+      "aliases": ["battery", "bms"],
+      "evidence_rules": [
+        {
+          "id": "battery_health_low",
+          "evidence_type": "metric_threshold",
+          "source": "battery_status",
+          "metric": "full_charge_capacity_ratio",
+          "operator": "<",
+          "threshold": 0.6,
+          "weight": 0.9,
+          "description": "Battery full-charge capacity is far below design capacity."
+        },
+        {
+          "id": "battery_charge_failure_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "battery|charging|acpi",
+          "weight": 0.5,
+          "description": "Power or charging related events appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "ssd",
+      "name": "Solid State Drive",
+      "category": "StorageFRU",
+      "replaceable": true,
+      "description": "Internal SSD used by the operating system.",
+      "aliases": ["disk", "nvme", "storage"],
+      "evidence_rules": [
+        {
+          "id": "ssd_smart_warning",
+          "evidence_type": "health_warning",
+          "source": "smart",
+          "pattern": "critical_warning|media_errors|unsafe_shutdowns",
+          "weight": 1.0,
+          "description": "SMART health data reports a storage warning."
+        },
+        {
+          "id": "ssd_io_error_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "disk|ntfs|storahci|stornvme|bad block|io error",
+          "weight": 0.8,
+          "description": "Storage-related errors appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "memory_module",
+      "name": "Memory Module",
+      "category": "ComputeFRU",
+      "replaceable": true,
+      "description": "Replaceable RAM module or memory subsystem.",
+      "aliases": ["ram", "memory"],
+      "evidence_rules": [
+        {
+          "id": "memory_bugcheck_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "memory management|page fault|bugcheck",
+          "weight": 0.8,
+          "description": "Crash logs contain memory-related bugcheck patterns."
+        },
+        {
+          "id": "memory_test_failed",
+          "evidence_type": "active_test",
+          "source": "memory_test",
+          "pattern": "failed",
+          "weight": 1.0,
+          "description": "Active memory test reports failures."
+        }
+      ]
+    },
+    {
+      "id": "wireless_card",
+      "name": "Wireless Network Card",
+      "category": "CommunicationFRU",
+      "replaceable": true,
+      "description": "Wi-Fi and Bluetooth communication module.",
+      "aliases": ["wifi", "wlan", "bluetooth"],
+      "evidence_rules": [
+        {
+          "id": "wifi_driver_reset_log",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "wlan|wifi|netwtw|bluetooth|adapter reset",
+          "weight": 0.7,
+          "description": "Wireless adapter reset or disconnect events appear in logs."
+        },
+        {
+          "id": "wifi_device_missing",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "wireless_missing",
+          "weight": 1.0,
+          "description": "Wireless network device is missing or disabled unexpectedly."
+        }
+      ]
+    },
+    {
+      "id": "cooling_fan",
+      "name": "Cooling Fan Assembly",
+      "category": "ThermalFRU",
+      "replaceable": true,
+      "description": "Fan and heat dissipation assembly.",
+      "aliases": ["fan", "cooling", "thermal"],
+      "evidence_rules": [
+        {
+          "id": "thermal_throttling",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "thermal_throttle_ratio",
+          "operator": ">",
+          "threshold": 0.2,
+          "weight": 0.9,
+          "description": "CPU or GPU is frequently thermal throttled."
+        },
+        {
+          "id": "fan_speed_abnormal",
+          "evidence_type": "metric_threshold",
+          "source": "thermal_metrics",
+          "metric": "fan_response_error",
+          "operator": ">",
+          "threshold": 0.5,
+          "weight": 0.8,
+          "description": "Fan speed does not respond normally to high temperature."
+        }
+      ]
+    },
+    {
+      "id": "display_panel",
+      "name": "Display Panel Assembly",
+      "category": "DisplayFRU",
+      "replaceable": true,
+      "description": "Internal display panel and cable assembly.",
+      "aliases": ["screen", "panel", "edp"],
+      "evidence_rules": [
+        {
+          "id": "display_driver_error",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "display|graphics|nvlddmkm|amdkmdag|igfx",
+          "weight": 0.5,
+          "description": "Display or graphics driver errors appear in system logs."
+        },
+        {
+          "id": "external_display_ok_internal_failed",
+          "evidence_type": "active_test",
+          "source": "display_test",
+          "pattern": "external_ok_internal_failed",
+          "weight": 1.0,
+          "description": "External display works while internal panel test fails."
+        }
+      ]
+    },
+    {
+      "id": "keyboard_touchpad",
+      "name": "Keyboard and Touchpad Assembly",
+      "category": "InputFRU",
+      "replaceable": true,
+      "description": "Internal keyboard and touchpad input assembly.",
+      "aliases": ["keyboard", "touchpad", "hid"],
+      "evidence_rules": [
+        {
+          "id": "hid_device_error",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "hid|keyboard|touchpad|i2c hid",
+          "weight": 0.7,
+          "description": "HID device errors appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "usb_interface_board",
+      "name": "USB Interface Board",
+      "category": "InterfaceFRU",
+      "replaceable": true,
+      "description": "Replaceable USB or side I/O daughter board.",
+      "aliases": ["usb", "io board", "type-c"],
+      "evidence_rules": [
+        {
+          "id": "usb_enum_failure",
+          "evidence_type": "log_pattern",
+          "source": "system_event_log",
+          "pattern": "usb|device not recognized|hub",
+          "weight": 0.7,
+          "description": "USB enumeration errors appear in system logs."
+        }
+      ]
+    },
+    {
+      "id": "mainboard",
+      "name": "Mainboard",
+      "category": "MainboardFRU",
+      "replaceable": true,
+      "description": "Main system board used as a fallback FRU when multiple buses fail.",
+      "aliases": ["motherboard", "system board"],
+      "evidence_rules": [
+        {
+          "id": "multi_bus_failure",
+          "evidence_type": "device_state",
+          "source": "device_inventory",
+          "pattern": "multi_bus_failure",
+          "weight": 0.8,
+          "description": "Multiple independent buses or onboard devices fail together."
+        }
+      ]
+    }
+  ]
+}

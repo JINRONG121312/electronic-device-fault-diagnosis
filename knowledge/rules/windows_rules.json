@@ -1,0 +1,29 @@
+{
+  "version": "0.1",
+  "rules": [
+    {
+      "id": "windows_pnp_code_43",
+      "evidence_type": "PnP_code",
+      "pattern": "problem_code=43",
+      "supports": ["connector_or_interconnect_fault", "driver_or_os_fault"],
+      "conflicts": [],
+      "weight": 0.6
+    },
+    {
+      "id": "windows_whea_hardware_error",
+      "evidence_type": "event_log",
+      "pattern": "WHEA|machine check|PCI Express",
+      "supports": ["motherboard", "storage_fru", "memory_subsystem"],
+      "conflicts": ["external_environment_fault"],
+      "weight": 0.8
+    },
+    {
+      "id": "windows_driver_stack_event",
+      "evidence_type": "event_log",
+      "pattern": "driver|service|NDIS|nvlddmkm|igfx|storahci|stornvme",
+      "supports": ["driver_or_os_fault"],
+      "conflicts": [],
+      "weight": 0.7
+    }
+  ]
+}

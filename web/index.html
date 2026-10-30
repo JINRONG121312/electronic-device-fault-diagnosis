@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>电子设备故障诊断研究工作台</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <strong>故障诊断研究工作台</strong>
+      <span>跨设备 · 跨系统 · 软件硬件边界诊断</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="self" title="扫描、采集并诊断当前运行本程序的机器">
+        <span class="icon">1</span><span>自机检测</span>
+      </button>
+      <button class="nav-item" data-view="remote" title="客户交互和互机诊断">
+        <span class="icon">2</span><span>互机诊断</span>
+      </button>
+      <button class="nav-item" data-view="baseline" title="查看新设备的保底证据采集计划">
+        <span class="icon">3</span><span>保底采集</span>
+      </button>
+      <button class="nav-item" data-view="collection" title="配置系统设置、仪表盘刷新、数据采集和后台运行">
+        <span class="icon">4</span><span>设置</span>
+      </button>
+      <button class="nav-item" data-view="guide" title="查看系统使用说明和互机采集方法">
+        <span class="icon">5</span><span>使用说明</span>
+      </button>
+      <details class="nav-group">
+        <summary>研究与管理</summary>
+        <button class="nav-item secondary-nav" data-view="evidence" title="查看标准化证据层">
+          <span class="icon">A</span><span>证据明细</span>
+        </button>
+        <button class="nav-item secondary-nav" data-view="frus" title="查看服务性与硬件边界模型">
+          <span class="icon">B</span><span>服务性模型</span>
+        </button>
+        <button class="nav-item secondary-nav" data-view="setup" title="切换设备类型、厂家和型号">
+          <span class="icon">C</span><span>设备接入</span>
+        </button>
+        <button class="nav-item secondary-nav" data-view="records" title="数据列表展示">
+          <span class="icon">D</span><span>数据列表</span>
+        </button>
+        <button class="nav-item secondary-nav" data-view="experiments" title="导入测试样本并查看 Loghub OS 实验量化结果">
+          <span class="icon">E</span><span>实验工作台</span>
+        </button>
+      </details>
+    </nav>
+  </aside>
+
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">自机检测</h1>
+        <p id="pageSubtitle">扫描当前机器、采集运行证据，并执行异常检测、故障分类和决策。</p>
+      </div>
+      <div class="toolbar" aria-label="仪表盘操作">
+        <div class="toolbar-group refresh-tools">
+          <button class="icon-button btn btn-secondary btn-icon" id="refreshBtn" title="立即刷新仪表盘" aria-label="立即刷新仪表盘">↻</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="statusBox" class="status-box" hidden></section>
+
+    <section id="evidence" class="view">
+      <div class="section-header">
+        <div>
+          <h2>标准化证据层</h2>
+          <p>把系统差异转换为统一 runtime_info 字段，诊断引擎只读取标准键。</p>
+        </div>
+      </div>
+      <div id="evidenceLayers" class="evidence-grid"></div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>原始指标浏览</h2>
+            <p>用于调试采集器和检查不同平台字段映射是否完整。</p>
+          </div>
+        </div>
+        <div id="metricSections" class="metric-sections"></div>
+      </div>
+    </section>
+
+    <section id="frus" class="view">
+      <div class="section-header">
+        <div>
+          <h2>服务性与硬件边界模型</h2>
+          <p>可更换模块只是诊断后的服务性标签，主线仍是软件、驱动、系统、固件、环境和硬件边界故障诊断。</p>
+        </div>
+        <div class="filter-row">
+          <input id="fruSearch" class="input" type="search" placeholder="搜索模块、证据、别名" />
+          <select id="categoryFilter" class="select"></select>
+        </div>
+      </div>
+      <div id="fruList" class="fru-list"></div>
+    </section>
+
+    <section id="baseline" class="view">
+      <div class="section-header">
+        <div>
+          <h2>保底证据采集计划</h2>
+          <p>每个候选故障对象固定拆成 inventory、metric、log/event 和 active test；新设备先按最低证据包采集，再由具体型号知识库修正。</p>
+        </div>
+      </div>
+      <div id="baselineSummary" class="summary-grid"></div>
+      <div class="split">
+        <div class="band">
+          <div class="section-header"><h2>最需要补齐证据的对象</h2></div>
+          <div id="baselineBlocked" class="known-models"></div>
+        </div>
+        <div class="band">
+          <div class="section-header"><h2>采集层覆盖</h2></div>
+          <div id="baselineLayers" class="coverage-panel"></div>
+        </div>
+      </div>
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>候选对象缺失项</h2>
+            <p>优先补 required，再执行主动测试；enhancing 用来提高置信度和区分相邻故障候选。</p>
+          </div>
+        </div>
+        <div id="baselinePlan" class="baseline-grid"></div>
+      </div>
+    </section>
+
+    <section id="self" class="view active">
+      <div class="band quick-actions-panel">
+        <div class="section-header">
+          <div>
+            <h2>自机检测</h2>
+            <p>用于操作系统仍可运行本程序的场景。先扫描本机和采集运行证据，再执行异常检测、故障分类和决策。</p>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button type="button" class="btn btn-secondary btn-lg" id="quickScanBtn">
+            <span class="btn-leading-icon" aria-hidden="true">⌕</span>扫描本机
+          </button>
+          <button type="button" class="btn btn-secondary btn-lg" id="quickCollectBtn">
+            <span class="btn-leading-icon" aria-hidden="true">↧</span>采集数据
+          </button>
+          <button type="button" class="btn btn-primary btn-lg primary-diagnose-button" id="quickSelfDiagnoseBtn">
+            <span class="btn-leading-icon" aria-hidden="true">✓</span>开始诊断
+          </button>
+          <button type="button" class="btn btn-secondary btn-lg" id="quickOpenOverviewBtn">
+            <span class="btn-leading-icon" aria-hidden="true">↻</span>刷新结果
+          </button>
+        </div>
+        <div id="quickActionResult" class="quick-action-result" hidden></div>
+      </div>
+
+      <div class="summary-grid priority-summary" id="selfSummaryGrid"></div>
+
+      <div class="split">
+        <div class="band compact-band">
+          <div class="section-header">
+            <div>
+              <h2>当前设备与证据状态</h2>
+            </div>
+            <span id="selfPlatformBadge" class="badge">-</span>
+          </div>
+          <div class="kv-grid" id="selfPlatformFacts"></div>
+        </div>
+
+        <div class="band compact-band">
+          <div class="section-header">
+            <div>
+              <h2>证据覆盖</h2>
+            </div>
+          </div>
+          <div id="selfCoveragePanel" class="coverage-panel"></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>故障分类与决策</h2>
+            <p>自机诊断结果直接在本页展示，分类完成后再给出维护或补采决策。</p>
+          </div>
+          <span id="selfDiagnosisBadge" class="badge">-</span>
+        </div>
+        <div id="selfDiagnosisSummary" class="summary-grid"></div>
+        <div id="selfDiagnosisRisks" class="diagnosis-risks"></div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>故障图推理</h2>
+            <p>展示日志、指标、主动测试、崩溃转储、候选根因和故障类别之间的证据传播关系。</p>
+          </div>
+          <span id="diagnosisGraphBadge" class="badge">-</span>
+        </div>
+        <div id="diagnosisGraphPanel" class="diagnosis-graph-panel"></div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>候选根因排序</h2>
+            <p>优先查看命中证据、反证和下一步补采动作。</p>
+          </div>
+        </div>
+        <div id="selfDiagnosisCandidates" class="diagnosis-grid"></div>
+      </div>
+
+      <div class="split">
+        <div class="band">
+          <div class="section-header">
+            <div>
+              <h2>日志证据聚合</h2>
+              <p>围绕故障发生时间收缩日志范围，再按诊断证据规则筛选事件。</p>
+            </div>
+          </div>
+          <form id="logCollectForm" class="log-form">
+            <label class="field">
+              <span>故障发生时间</span>
+              <input name="fault_time" id="faultTimeInput" class="input" type="datetime-local" />
+            </label>
+            <label class="field">
+              <span>故障前窗口（分钟）</span>
+              <input name="before_fault_minutes" class="input" type="number" min="1" max="1440" value="60" />
+            </label>
+            <label class="field">
+              <span>故障后窗口（分钟）</span>
+              <input name="after_fault_minutes" class="input" type="number" min="0" max="1440" value="15" />
+            </label>
+            <label class="field">
+              <span>最大日志数</span>
+              <input name="max_events" class="input" type="number" min="50" max="3000" value="500" />
+            </label>
+            <button type="submit" class="primary-button btn btn-primary">按故障时间采集日志</button>
+          </form>
+          <div id="eventWindow" class="event-window"></div>
+          <div id="eventBuckets" class="event-grid compact"></div>
+        </div>
+        <div class="band">
+          <div class="section-header">
+            <div>
+              <h2>主动测试录入</h2>
+            </div>
+          </div>
+          <div id="selfActiveTests" class="test-grid compact"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="remote" class="view">
+      <div class="split setup-layout">
+        <form id="remoteDiagnosisForm" class="band form-panel">
+          <div class="section-header">
+            <div>
+              <h2>互机诊断</h2>
+              <p>诊断主机通过 Target Agent、离线证据包或现场描述诊断另一台机器。</p>
+            </div>
+          </div>
+
+          <div class="mode-selector" role="radiogroup" aria-label="互机诊断模式">
+            <label class="mode-option">
+              <input type="radio" name="remote_mode" value="interface" checked />
+              <span>
+                <strong>接口采集</strong>
+                <small>故障机还能运行 Target Agent，诊断主机通过 HTTP API 查询能力并下发采集任务。</small>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="remote_mode" value="offline" />
+              <span>
+                <strong>离线证据导入</strong>
+                <small>故障机不能稳定运行程序，但可从 WinPE、安全模式或拆盘复制 dump、evtx 和 runtime_info。</small>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="remote_mode" value="power_off" />
+              <span>
+                <strong>无法交互/现场指导</strong>
+                <small>故障机无法启动、反复蓝屏或硬盘暂不可读，只按描述给出现场指导。</small>
+              </span>
+            </label>
+          </div>
+
+          <div id="targetAgentPanel" class="remote-agent-panel">
+            <div class="section-header compact-header">
+              <div>
+                <h3>连接被诊断机器</h3>
+                <p>在被诊断机器启动 Target Agent 后，诊断主机通过下列地址采集证据。</p>
+              </div>
+            </div>
+            <div class="form-grid two-col">
+              <label class="field">
+                <span>Target Agent 地址</span>
+                <input name="target_url" class="input" placeholder="http://192.168.1.23:8790" />
+              </label>
+              <label class="field">
+                <span>访问 Token</span>
+                <input name="target_token" class="input" type="password" autocomplete="off" placeholder="与 target_agent.py --token 一致" />
+              </label>
+            </div>
+            <div class="form-grid two-col">
+              <label class="field">
+                <span>故障窗口</span>
+                <select name="time_window_minutes" class="select">
+                  <option value="30">前后 30 分钟</option>
+                  <option value="60" selected>前后 60 分钟</option>
+                  <option value="180">前后 3 小时</option>
+                  <option value="360">前后 6 小时</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>连接超时</span>
+                <select name="target_timeout" class="select">
+                  <option value="8" selected>8 秒</option>
+                  <option value="20">20 秒</option>
+                  <option value="45">45 秒</option>
+                </select>
+              </label>
+            </div>
+            <div class="checkbox-row evidence-choice-row">
+              <label><input type="checkbox" name="target_collect" value="inventory" checked /> 基础清单</label>
+              <label><input type="checkbox" name="target_collect" value="logs" checked /> 日志</label>
+              <label><input type="checkbox" name="target_collect" value="metrics" checked /> 指标</label>
+              <label><input type="checkbox" name="target_collect" value="active_tests" checked /> 主动测试状态</label>
+              <label><input type="checkbox" name="target_collect" value="crash_dump" checked /> 崩溃转储元数据</label>
+            </div>
+            <div class="form-actions remote-agent-actions">
+              <button type="button" class="btn btn-secondary" id="probeTargetBtn">测试连接/查询能力</button>
+              <button type="button" class="btn btn-primary" id="collectTargetBtn">远程采集并诊断</button>
+            </div>
+            <div id="targetAgentStatus" class="remote-agent-status empty">尚未连接 Target Agent。</div>
+          </div>
+
+          <div class="form-grid two-col">
+            <label class="field">
+              <span>厂家</span>
+              <input name="manufacturer" class="input" placeholder="Lenovo / Dell / HP / ASUS" />
+            </label>
+            <label class="field">
+              <span>型号</span>
+              <input name="model" class="input" placeholder="例如 ThinkPad T14 / 81YL" />
+            </label>
+          </div>
+
+          <div class="form-grid two-col">
+            <label class="field">
+              <span>操作系统</span>
+              <select name="os_family" class="select">
+                <option value="windows">Windows</option>
+                <option value="linux">Linux</option>
+                <option value="unknown">未知</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>故障发生时间</span>
+              <input name="fault_time" class="input" type="datetime-local" />
+            </label>
+          </div>
+
+          <details class="advanced-fields">
+            <summary>案例信息</summary>
+            <div class="form-grid two-col">
+              <label class="field">
+                <span>客户/案例编号</span>
+                <input name="customer_id" class="input" placeholder="case_0001" />
+              </label>
+              <label class="field">
+                <span>设备编号</span>
+                <input name="device_id" class="input" placeholder="SN 或自定义编号" />
+              </label>
+            </div>
+          </details>
+
+          <div class="checkbox-row symptom-row">
+            <label><input type="checkbox" name="symptoms" value="bsod" /> 蓝屏/死机</label>
+            <label><input type="checkbox" name="symptoms" value="black_screen" /> 黑屏/无显示</label>
+            <label><input type="checkbox" name="symptoms" value="charging_failure" /> 无法充电</label>
+            <label><input type="checkbox" name="symptoms" value="no_network" /> 无法联网</label>
+            <label><input type="checkbox" name="symptoms" value="boot_failure" /> 无法启动</label>
+            <label><input type="checkbox" name="symptoms" value="slow_io" /> 卡顿/慢</label>
+          </div>
+
+          <label class="field">
+            <span>客户描述</span>
+            <textarea name="description" class="textarea" rows="4" placeholder="例如：电脑突然蓝屏，重启后还能进入系统，最近更新过显卡驱动。"></textarea>
+          </label>
+
+          <label class="field">
+            <span>对方机器 runtime_info.json / 离线证据 JSON（可选）</span>
+            <textarea name="runtime_info" class="textarea code-textarea" rows="8" placeholder="接口采集模式可留空。离线导入时粘贴 runtime_info.json，建议包含 crash_dump.available/source/dump_files、System.evtx/Application.evtx 摘要、驱动列表、系统版本和 SMART 信息。"></textarea>
+          </label>
+
+          <div class="remote-collection-panel">
+            <div class="section-header compact-header">
+              <div>
+                <h3>互机采集模块</h3>
+                <p>已知另一台电脑有问题时，优先采集这些能支撑分类和决策的证据。</p>
+              </div>
+            </div>
+            <div id="remoteCollectionModule" class="remote-collection-module"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-button btn btn-primary"><span class="btn-leading-icon" aria-hidden="true">↗</span>生成互机诊断</button>
+          </div>
+        </form>
+
+        <div class="band">
+          <div class="section-header">
+            <div>
+              <h2>互机诊断结果</h2>
+              <p>可传输证据包时输出诊断预览；无法交互时输出现场或远程指导步骤。</p>
+            </div>
+          </div>
+          <div id="remoteDiagnosisResult" class="remote-result">
+            <div class="empty">填写左侧信息后生成初诊结果。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="collection" class="view">
+      <div class="split setup-layout">
+        <form id="collectionSettingsForm" class="band form-panel">
+          <div class="section-header">
+            <div>
+              <h2>设置</h2>
+              <p>集中配置仪表盘刷新、数据采集、存储位置、历史快照和后台任务。</p>
+            </div>
+          </div>
+
+          <div class="settings-panel-grid">
+            <section class="settings-panel">
+              <h3>仪表盘刷新</h3>
+              <div class="settings-inline">
+                <label class="auto-refresh-control" title="按固定间隔自动刷新仪表盘">
+                  <input id="autoRefreshToggle" type="checkbox" />
+                  <span>自动刷新</span>
+                </label>
+                <select class="select compact-select" id="autoRefreshInterval" aria-label="自动刷新间隔">
+                  <option value="15">15 秒</option>
+                  <option value="30" selected>30 秒</option>
+                  <option value="60">1 分钟</option>
+                  <option value="300">5 分钟</option>
+                </select>
+                <span class="refresh-status" id="autoRefreshStatus">手动</span>
+              </div>
+            </section>
+
+          </div>
+
+          <label class="field">
+            <span>当前运行数据文件</span>
+            <input name="active_runtime_path" class="input" value="data/runtime_info.json" />
+          </label>
+
+          <label class="field">
+            <span>历史快照目录</span>
+            <input name="history_dir" class="input" value="data/history" />
+          </label>
+
+          <label class="field">
+            <span>历史文件命名模板</span>
+            <input name="filename_template" class="input" value="runtime_{timestamp}.json" />
+          </label>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>历史保留数量</span>
+              <input name="retention_count" class="input" type="number" min="1" max="10000" value="30" />
+            </label>
+            <label class="field">
+              <span>后台采集间隔（分钟）</span>
+              <input name="interval_minutes" class="input" type="number" min="1" max="10080" value="30" />
+            </label>
+            <label class="field">
+              <span>日志回看窗口（小时）</span>
+              <input name="hours" class="input" type="number" min="1" max="168" value="6" />
+            </label>
+          </div>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>System 最大事件数</span>
+              <input name="max_system_events" class="input" type="number" min="10" max="5000" value="200" />
+            </label>
+            <label class="field">
+              <span>Application 最大事件数</span>
+              <input name="max_application_events" class="input" type="number" min="10" max="5000" value="50" />
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label><input type="checkbox" name="save_history" checked /> 每次采集后保存历史快照</label>
+            <label><input type="checkbox" name="background_enabled" /> 允许后台周期性采集</label>
+            <label><input type="checkbox" name="collect_runtime" checked /> 后台采集运行指标与日志</label>
+            <label><input type="checkbox" name="scan_fru" /> 预留：后台重新扫描服务性对象</label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-button btn btn-primary">保存设置</button>
+            <button type="button" class="secondary-button btn btn-success" id="startBackgroundBtn">启动后台采集</button>
+            <button type="button" class="secondary-button btn btn-danger" id="stopBackgroundBtn">停止后台采集</button>
+          </div>
+        </form>
+
+        <div class="band">
+          <div class="section-header">
+            <div>
+              <h2>后台运行状态</h2>
+              <p>后台采集依赖本地 Web 服务进程，服务关闭后周期采集会停止。</p>
+            </div>
+            <button class="secondary-button btn btn-secondary btn-sm" id="refreshBackgroundBtn">刷新状态</button>
+          </div>
+          <div id="backgroundStatusPanel" class="kv-grid compact-kv"></div>
+
+          <div class="section-header storage-history-header">
+            <div>
+              <h2>历史快照</h2>
+              <p>用于回放不同时刻的设备状态，后续可用于趋势分析和故障前后对比。</p>
+            </div>
+          </div>
+          <div id="historySnapshots" class="known-models"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="records" class="view">
+      <div class="band data-list-panel">
+        <div class="section-header">
+          <div>
+            <h2>数据列表</h2>
+            <p>用于展示诊断案例、采集记录或待处理任务，支持搜索、筛选、排序、分页和批量操作。</p>
+          </div>
+          <div class="data-toolbar-actions">
+            <button type="button" class="btn btn-primary btn-sm" data-view-shortcut="experiments">导入测试样本</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="recordsReloadBtn">重新加载</button>
+            <button type="button" class="btn btn-warning btn-sm" id="recordsErrorBtn">模拟错误</button>
+          </div>
+        </div>
+
+        <div class="data-list-controls">
+          <label class="field search-field">
+            <span>关键词搜索</span>
+            <input id="recordsSearch" class="input" type="search" placeholder="搜索编号、设备、故障、负责人" />
+          </label>
+          <label class="field">
+            <span>状态</span>
+            <select id="recordsStatus" class="select">
+              <option value="all">全部状态</option>
+              <option value="open">待处理</option>
+              <option value="diagnosing">诊断中</option>
+              <option value="resolved">已解决</option>
+              <option value="blocked">阻塞</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>开始日期</span>
+            <input id="recordsDateFrom" class="input" type="date" />
+          </label>
+          <label class="field">
+            <span>结束日期</span>
+            <input id="recordsDateTo" class="input" type="date" />
+          </label>
+          <button type="button" class="btn btn-secondary btn-sm" id="recordsResetBtn">重置</button>
+        </div>
+
+        <div class="bulk-action-bar" id="recordsBulkBar" hidden>
+          <strong id="recordsSelectedText">已选择 0 项</strong>
+          <button type="button" class="btn btn-danger btn-sm" id="recordsBulkDeleteBtn">批量删除</button>
+        </div>
+
+        <div id="recordsState" class="data-list-state" hidden></div>
+
+        <div class="table-shell" id="recordsTableShell">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="select-cell"><input id="recordsSelectAll" type="checkbox" aria-label="全选" /></th>
+                <th><button type="button" class="sort-button" data-sort-key="caseId">案例编号</button></th>
+                <th><button type="button" class="sort-button" data-sort-key="device">设备</button></th>
+                <th><button type="button" class="sort-button" data-sort-key="fault">故障类型</button></th>
+                <th><button type="button" class="sort-button" data-sort-key="status">状态</button></th>
+                <th><button type="button" class="sort-button" data-sort-key="createdAt">日期</button></th>
+                <th><button type="button" class="sort-button" data-sort-key="owner">负责人</button></th>
+                <th class="action-cell">操作</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div id="recordsCount" class="table-count">0 条记录</div>
+          <div class="pagination">
+            <label class="page-size">
+              <span>每页</span>
+              <select id="recordsPageSize" class="select compact-select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-secondary btn-sm" id="recordsPrevBtn">上一页</button>
+            <span id="recordsPageText" class="page-text">1 / 1</span>
+            <button type="button" class="btn btn-secondary btn-sm" id="recordsNextBtn">下一页</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiments" class="view">
+      <div class="band experiment-panel">
+        <div class="section-header">
+          <div>
+            <h2>Loghub OS 实验工作台</h2>
+            <p>导入样本、生成 train/dev/test 划分、运行基线并用混淆矩阵量化测试集表现。</p>
+          </div>
+          <div class="data-toolbar-actions">
+            <button type="button" class="btn btn-secondary btn-sm" id="experimentRefreshBtn">刷新</button>
+          </div>
+        </div>
+
+        <div class="experiment-import-panel">
+          <div>
+            <h3>一键重建 Loghub 弱标签样本</h3>
+            <p>从 Linux、Windows、Mac structured CSV 聚合 DatasetCase，生成 train/dev/test 并运行基线预测。</p>
+          </div>
+          <div class="experiment-import-controls">
+            <label><input type="checkbox" name="experimentDataset" value="linux" checked /> Linux</label>
+            <label><input type="checkbox" name="experimentDataset" value="windows" checked /> Windows</label>
+            <label><input type="checkbox" name="experimentDataset" value="mac" checked /> Mac</label>
+            <label class="field compact-field">
+              <span>窗口行数</span>
+              <input id="experimentWindowSize" class="input" type="number" min="1" max="500" value="50" />
+            </label>
+            <label class="auto-refresh-control"><input id="experimentSkipDownload" type="checkbox" checked /> 使用本地原始文件</label>
+            <button type="button" class="btn btn-primary btn-sm" id="experimentImportBtn">导入并评估</button>
+          </div>
+          <div id="experimentImportStatus" class="remote-agent-status empty">尚未执行本轮导入。</div>
+        </div>
+
+        <div class="experiment-upload-panel">
+          <div>
+            <h3>导入已标注测试 JSONL</h3>
+            <p>用于论文实验的外部测试集应使用 DatasetCase JSONL，每行包含 label；导入后统一作为 test split 参与混淆矩阵量化。</p>
+          </div>
+          <div class="experiment-upload-controls">
+            <label class="field compact-field">
+              <span>测试样本文件</span>
+              <input id="experimentTestFile" class="input" type="file" accept=".jsonl,.json,application/json" />
+            </label>
+            <button type="button" class="btn btn-secondary btn-sm" id="experimentImportTestBtn">上传为 test</button>
+          </div>
+          <div id="experimentTestImportStatus" class="remote-agent-status empty">尚未上传额外测试集。</div>
+        </div>
+
+        <div class="data-list-controls experiment-controls">
+          <label class="field">
+            <span>数据集</span>
+            <select id="experimentDatasetFilter" class="select">
+              <option value="all">全部</option>
+              <option value="linux">Linux</option>
+              <option value="windows">Windows</option>
+              <option value="mac">Mac</option>
+              <option value="imported_test">上传测试集</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>划分</span>
+            <select id="experimentSplitFilter" class="select">
+              <option value="test" selected>test</option>
+              <option value="dev">dev</option>
+              <option value="train">train</option>
+              <option value="all">all</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>矩阵维度</span>
+            <select id="experimentMatrixKey" class="select">
+              <option value="target" selected>target</option>
+              <option value="fault_origin">fault_origin</option>
+              <option value="serviceability_type">serviceability_type</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>弱标签</span>
+            <select id="experimentLabelFilter" class="select">
+              <option value="all">全部</option>
+              <option value="non_fru_fault">弱异常</option>
+              <option value="no_fault_observed">无故障观察</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>表格行数</span>
+            <select id="experimentLimit" class="select">
+              <option value="20">20</option>
+              <option value="30" selected>30</option>
+              <option value="60">60</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="experimentNotice" class="status-box"></div>
+        <div id="experimentWorkflow" class="experiment-workflow"></div>
+        <div id="experimentSummary" class="summary-grid priority-summary"></div>
+
+        <div class="split">
+          <div class="band compact-band">
+            <div class="section-header"><h2>Split 指标</h2></div>
+            <div id="experimentSplitMetrics" class="experiment-split-grid"></div>
+          </div>
+          <div class="band compact-band">
+            <div class="section-header"><h2>当前筛选指标</h2></div>
+            <div id="experimentMetrics" class="kv-grid compact-kv"></div>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="band compact-band">
+            <div class="section-header"><h2>混淆矩阵</h2></div>
+            <div id="experimentConfusionMatrix" class="matrix-shell"></div>
+          </div>
+          <div class="band compact-band">
+            <div class="section-header"><h2>分类指标</h2></div>
+            <div id="experimentClassMetrics" class="table-shell"></div>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="band compact-band">
+            <div class="section-header"><h2>数据集组成</h2></div>
+            <div id="experimentDatasetStats" class="experiment-dataset-grid"></div>
+          </div>
+          <div class="band compact-band">
+            <div class="section-header"><h2>目标分布</h2></div>
+            <div id="experimentTargetBars" class="bar-list"></div>
+          </div>
+        </div>
+
+        <div class="band compact-band">
+          <div class="section-header">
+            <div>
+              <h2>样本表</h2>
+              <p>默认只看 test split。展开详情前先用矩阵判断模型在哪些类别上混淆。</p>
+            </div>
+          </div>
+          <div id="experimentCases" class="table-shell"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="view">
+      <div class="band guide-hero">
+        <div class="section-header">
+          <div>
+            <h2>系统使用说明</h2>
+            <p>本系统用于电子设备故障诊断研究，面向自机检测、互机诊断、证据采集和诊断决策实验。</p>
+          </div>
+        </div>
+        <div class="guide-step-grid">
+          <div class="guide-step"><strong>1. 打开工作台</strong><span>浏览器入口是 http://localhost:8780/；/api/health 只用于服务健康检查。</span></div>
+          <div class="guide-step"><strong>2. 自机检测</strong><span>当前机器能运行程序时，扫描本机、采集 runtime_info，并执行完整诊断流程。</span></div>
+          <div class="guide-step"><strong>3. 互机诊断</strong><span>诊断主机通过 Target Agent、离线证据包或现场描述诊断另一台故障机器。</span></div>
+          <div class="guide-step"><strong>4. 研究管理</strong><span>保存证据、维修动作和维修结果标签，用于后续实验评估。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>启动和访问</h2>
+            <p>启动 Web 服务后，只需要打开根路径页面；健康检查接口不是前端页面。</p>
+          </div>
+        </div>
+        <div class="guide-command-grid">
+          <div>
+            <strong>启动服务</strong>
+            <pre class="guide-code">powershell -ExecutionPolicy Bypass -File scripts\start_web_server.ps1</pre>
+          </div>
+          <div>
+            <strong>浏览器访问</strong>
+            <pre class="guide-code">http://localhost:8780/</pre>
+          </div>
+        </div>
+        <ul class="limitation-list">
+          <li>如果页面只显示 JSON，通常是打开了 http://localhost:8780/api/health，请改为打开根路径。</li>
+          <li>服务启动后会输出 DashboardUrl 或 OpenThisInBrowser，优先使用该地址。</li>
+        </ul>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>诊断流程</h2>
+            <p>蓝屏、黑屏、无法充电、无法联网等都作为故障症状输入，不单独作为诊断模块。</p>
+          </div>
+        </div>
+        <pre class="guide-code">证据采集
+  -> 异常检测 anomaly_detection
+  -> 故障分类 fault_classification
+  -> 软硬件边界判断 boundary_assessment
+  -> 故障决策 fault_decision
+  -> 维护策略和补采建议</pre>
+        <div class="guide-evidence-grid">
+          <div><strong>异常检测</strong><span>判断当前设备状态是否偏离正常运行状态，输出健康度和异常项。</span></div>
+          <div><strong>故障分类</strong><span>输出驱动、系统、固件、配置、环境、硬件或混合不确定等故障来源。</span></div>
+          <div><strong>边界判断</strong><span>判断故障更偏软件侧、硬件侧、软硬件边界还是证据不足。</span></div>
+          <div><strong>故障决策</strong><span>在分类之后给出软件修复、继续补采、边界区分测试或硬件服务建议。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>自机检测怎么用</h2>
+            <p>适用于本机操作系统还能运行程序的场景。</p>
+          </div>
+        </div>
+        <div class="guide-two-col">
+          <div>
+            <h3>推荐步骤</h3>
+            <ol>
+              <li>进入“自机检测”页面。</li>
+              <li>点击“扫描本机”，生成或更新设备画像。</li>
+              <li>点击“采集数据”，更新 runtime_info.json。</li>
+              <li>点击“开始诊断”，查看健康度、异常检测、故障分类、边界判断和决策结果。</li>
+              <li>如提示证据不足，按“下一步排查”补充主动测试或故障时间窗口日志。</li>
+            </ol>
+          </div>
+          <div>
+            <h3>结果解读</h3>
+            <ul class="limitation-list">
+              <li>健康度用于判断当前异常是否影响运行，不等于最终根因。</li>
+              <li>故障分类是研究主标签，例如 driver_fault、os_fault、hardware_fault。</li>
+              <li>软硬件边界用于决定是否需要先做区分测试，避免过早建议换硬件。</li>
+              <li>FRU 或可更换模块属于维修服务标签，不是故障分类标签。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>互机接口采集怎么工作</h2>
+            <p>装载本程序的机器是 Controller，被诊断机器运行轻量 Target Agent。</p>
+          </div>
+        </div>
+        <div class="guide-flow">
+          <div><strong>Controller</strong><span>本 Web 系统，负责连接目标机、下发采集任务、接收证据包、运行诊断。</span></div>
+          <div><strong>HTTP API</strong><span>Controller 访问 Target Agent 的 /api/health、/api/capabilities、/api/collect。</span></div>
+          <div><strong>Target Agent</strong><span>运行在被诊断机器，读取本机日志、指标、设备状态和崩溃转储元数据。</span></div>
+          <div><strong>Evidence Package</strong><span>Target Agent 返回标准证据包，Controller 自动转为 runtime_info 并执行诊断。</span></div>
+        </div>
+        <pre class="guide-code">诊断主机 Controller
+  -> POST /api/target/probe
+  -> Target Agent: GET /api/health + /api/capabilities
+  -> POST /api/target/collect
+  -> Target Agent: POST /api/collect
+  -> Evidence Package
+  -> 异常检测 -> 故障分类 -> 软硬件边界判断 -> 故障决策</pre>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>互机诊断三种场景</h2>
+            <p>互机诊断表示装载本系统的机器作为诊断主机，去诊断另一台故障机器。</p>
+          </div>
+        </div>
+        <div class="guide-evidence-grid">
+          <div><strong>接口采集</strong><span>故障机还能运行 Target Agent，Controller 通过 HTTP API 采集证据并自动诊断。</span></div>
+          <div><strong>离线证据</strong><span>故障机不能联网但还能导出 runtime_info.json，可把证据包复制到诊断主机。</span></div>
+          <div><strong>无法交互</strong><span>故障机断电、无法启动或死机，只能根据型号、症状和现场观察生成指导。</span></div>
+          <div><strong>远程描述</strong><span>客户只能描述肉眼可见现象时，系统输出初步判断、补采问题和现场操作建议。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>软硬件边界如何理解</h2>
+            <p>软硬件边界是诊断归因边界，不是物理边界；它描述软件栈控制硬件、硬件状态反馈软件的交互位置。</p>
+          </div>
+        </div>
+        <div class="guide-evidence-grid">
+          <div><strong>软件侧</strong><span>驱动、操作系统、配置、文件系统或策略证据强，暂未发现硬件确认性异常。</span></div>
+          <div><strong>硬件侧</strong><span>SMART、WHEA、内存测试、设备缺失或主动测试失败等硬件证据强。</span></div>
+          <div><strong>软硬件边界</strong><span>驱动/固件/总线/控制器/接口证据与硬件路径证据同时存在，需要先做边界区分测试。</span></div>
+          <div><strong>混合不确定</strong><span>只有症状描述、证据不足或多方向证据接近，不能直接归因或建议换件。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>在被诊断机器启动 Target Agent</h2>
+            <p>适用于被诊断机器还能进入系统、网络可达、允许临时运行 Python 的场景。</p>
+          </div>
+        </div>
+        <div class="guide-command-grid">
+          <div>
+            <strong>Windows / Linux</strong>
+            <pre class="guide-code">python target_agent.py --host 0.0.0.0 --port 8790 --token lab-token</pre>
+          </div>
+          <div>
+            <strong>实验室无 Token 模式</strong>
+            <pre class="guide-code">python target_agent.py --host 0.0.0.0 --port 8790 --allow-unsafe-no-token</pre>
+          </div>
+        </div>
+        <ul class="limitation-list">
+          <li>推荐在隔离局域网使用 Token；不要在公网暴露 Target Agent。</li>
+          <li>Windows 防火墙需要放行端口 8790，Linux 需要允许对应入站端口。</li>
+          <li>读取部分事件日志、dump、SMART 或硬件传感器可能需要管理员权限。</li>
+        </ul>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>互机诊断页怎么用</h2>
+          </div>
+        </div>
+        <div class="guide-two-col">
+          <div>
+            <h3>接口采集</h3>
+            <ol>
+              <li>在被诊断机器启动 Target Agent。</li>
+              <li>在互机诊断页填写 Target Agent 地址和 Token。</li>
+              <li>点击“测试连接/查询能力”，确认可采集证据层。</li>
+              <li>填写型号、系统、故障时间、症状和客户描述。</li>
+              <li>点击“远程采集并诊断”，系统自动采集证据并给出诊断。</li>
+            </ol>
+          </div>
+          <div>
+            <h3>离线或不可交互</h3>
+            <ol>
+              <li>如果目标机还能运行采集脚本但网络不可达，导出 runtime_info.json 后粘贴到文本框。</li>
+              <li>如果目标机已经断电、无法启动或无法运行程序，切换到“无法交互/现场指导”。</li>
+              <li>记录电源灯、风扇、蜂鸣码、屏幕文字、外接屏结果、已知正常适配器测试和照片视频。</li>
+              <li>系统只输出现场指导和补采建议，不把现场描述直接当成最终硬件结论。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>典型故障怎么采证</h2>
+            <p>采证目标是把用户描述转成可推理证据，而不是直接给出换件结论。</p>
+          </div>
+        </div>
+        <div class="guide-evidence-grid">
+          <div><strong>蓝屏/死机</strong><span>记录 stop code、minidump、WHEA、Kernel-Power、近期驱动/系统更新和崩溃时间窗口事件。</span></div>
+          <div><strong>黑屏/无显示</strong><span>记录外接屏测试、BIOS 是否可见、背光、显示驱动日志、EDID 和面板状态。</span></div>
+          <div><strong>无法充电</strong><span>记录电池健康、适配器功率、ACPI/UCSI 事件、充放电状态和已知正常适配器交叉测试。</span></div>
+          <div><strong>无法联网</strong><span>记录网卡状态、驱动版本、IP/DNS/网关、ping 结果、热点对比和蓝牙共存状态。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>证据层覆盖范围</h2>
+          </div>
+        </div>
+        <div class="guide-evidence-grid">
+          <div><strong>inventory</strong><span>厂家、型号、序列号、OS、BIOS、设备管理器/PnP、PCI/USB/块设备。</span></div>
+          <div><strong>logs</strong><span>Windows Event Log、Reliability、journalctl、dmesg、故障时间窗口事件。</span></div>
+          <div><strong>metrics</strong><span>SMART/NVMe、电池、电源、内存、温度、网络、存储延迟。</span></div>
+          <div><strong>active_tests</strong><span>网关 ping、外接屏、适配器交叉测试、存储短测、内存测试等状态。</span></div>
+          <div><strong>crash_dump</strong><span>BugCheck、minidump/MEMORY.DMP 元数据、WHEA 和 Kernel-Power 关联事件。</span></div>
+          <div><strong>repair_result</strong><span>维修动作、是否解决、最终根因标签；用于后续论文评估。</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>页面功能总览</h2>
+          </div>
+        </div>
+        <div class="guide-two-col">
+          <div>
+            <h3>诊断功能</h3>
+            <ul class="limitation-list">
+              <li>自机检测：扫描本机、采集运行证据、异常检测、故障分类、决策和维护策略。</li>
+              <li>互机诊断：Target Agent 接口采集、runtime_info 导入、现场不可交互指导。</li>
+              <li>保底采集：按候选故障对象查看最低证据包和缺失项。</li>
+              <li>证据明细：浏览统一 runtime_info 字段和原始指标。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>研究管理功能</h3>
+            <ul class="limitation-list">
+              <li>服务性模型：查看硬件边界、软件/环境根因和可更换性标签。</li>
+              <li>设备接入：选择设备类型、厂家型号并生成诊断画像。</li>
+              <li>设置：配置自动刷新、采集路径、历史快照和后台采集。</li>
+              <li>数据列表：检索、筛选、排序、分页和批量管理诊断案例。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="section-header">
+          <div>
+            <h2>常见问题</h2>
+          </div>
+        </div>
+        <div class="guide-two-col">
+          <div>
+            <h3>页面和服务</h3>
+            <ul class="limitation-list">
+              <li>只看到 JSON：说明打开的是 /api/health，请打开 http://localhost:8780/。</li>
+              <li>Target Agent 连接失败：检查目标机 IP、端口、Token、防火墙和是否在同一网络。</li>
+              <li>采集不完整：部分日志、dump、SMART 或电池报告需要管理员权限。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>诊断结论</h3>
+            <ul class="limitation-list">
+              <li>mixed_or_uncertain 表示证据不足，不代表没有故障。</li>
+              <li>hardware_software_boundary 表示需要先做边界区分测试，不应直接换件。</li>
+              <li>现场描述只能用于初诊和指导，论文评估仍需要维修结果和最终根因标签。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="setup" class="view">
+      <div class="split setup-layout">
+        <form id="setupForm" class="band form-panel">
+          <div class="section-header">
+            <div>
+              <h2>设备接入</h2>
+              <p>声明设备类型和机型后，系统优先匹配知识库；未覆盖时创建自定义画像。</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>设备类型</span>
+            <select name="device_type" class="select">
+              <option value="laptop">笔记本电脑</option>
+              <option value="server">服务器</option>
+              <option value="router">路由器</option>
+              <option value="custom">自定义电子信息设备</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>厂家</span>
+            <input name="manufacturer" class="input" value="ASUS" />
+          </label>
+
+          <label class="field">
+            <span>型号</span>
+            <input name="model" class="input" value="天选5pro FX607JV" />
+          </label>
+
+          <label class="field">
+            <span>自定义设备名称</span>
+            <input name="custom_name" class="input" placeholder="知识库未覆盖时使用" />
+          </label>
+
+          <div class="checkbox-row">
+            <label><input type="checkbox" name="run_detection" /> 生成配置前重新扫描硬件</label>
+            <label><input type="checkbox" name="allow_mismatch" /> 允许声明类型与扫描类型不一致</label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-button btn btn-primary">生成诊断画像</button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="/api_client.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

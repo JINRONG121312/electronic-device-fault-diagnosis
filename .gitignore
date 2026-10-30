@@ -1,0 +1,25 @@
+# 数据与实验产物不入库
+datasets/
+external/
+reports/
+tmp/
+output/
+result/
+
+# 运行时
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# 中间数据
+experiments/gaia_*_tmp.json
+*.log
+*.pid
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

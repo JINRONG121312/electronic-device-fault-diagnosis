@@ -1,0 +1,46 @@
+{
+  "version": "0.1",
+  "description": "Non-FRU root-cause ontology for excluding unnecessary hardware replacement.",
+  "entities": [
+    {
+      "id": "driver_or_os_fault",
+      "type": "non_fru_fault",
+      "category": "software_or_os",
+      "repair_action": "update_or_rollback_driver_or_repair_os",
+      "typical_symptoms": ["bsod", "device_reset", "service_failure", "network_fault"],
+      "evidence_types": ["event_log", "driver_stack", "crash_dump"]
+    },
+    {
+      "id": "firmware_or_config_fault",
+      "type": "non_fru_fault",
+      "category": "firmware_or_config",
+      "repair_action": "update_bios_ec_or_change_setting",
+      "typical_symptoms": ["no_charge", "thermal_policy_issue", "device_disabled"],
+      "evidence_types": ["BIOS_version", "ACPI_event", "policy_config"]
+    },
+    {
+      "id": "external_environment_fault",
+      "type": "non_fru_fault",
+      "category": "external_environment",
+      "repair_action": "swap_external_cable_adapter_router_or_peripheral",
+      "typical_symptoms": ["no_network", "no_charge", "usb_failure"],
+      "evidence_types": ["external_swap_test", "network_gateway_test", "adapter_swap_test"]
+    },
+    {
+      "id": "connector_or_interconnect_fault",
+      "type": "non_fru_fault",
+      "category": "connector_or_interconnect",
+      "repair_action": "reseat_or_repair_cable_connector_path",
+      "typical_symptoms": ["intermittent_failure", "device_descriptor_failure", "flicker"],
+      "evidence_types": ["PnP_code", "movement_test", "visual_inspection"]
+    },
+    {
+      "id": "data_or_filesystem_fault",
+      "type": "non_fru_fault",
+      "category": "data_or_filesystem",
+      "repair_action": "free_space_and_repair_filesystem_or_os_image",
+      "typical_symptoms": ["slow_system", "update_failure", "boot_failure"],
+      "evidence_types": ["free_space", "filesystem_event", "os_repair_log"]
+    }
+  ]
+}

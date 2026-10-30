@@ -1,0 +1,55 @@
+{
+  "version": "0.1",
+  "description": "FRU and serviceability ontology for repair-oriented electronic device diagnosis.",
+  "entities": [
+    {
+      "id": "battery_pack",
+      "type": "FRU",
+      "category": "PowerFRU",
+      "serviceability_type": "replaceable_fru",
+      "typical_symptoms": ["no_charge", "short_battery_life", "battery_not_detected"],
+      "evidence_types": ["battery_metric", "power_event", "active_discharge_test"]
+    },
+    {
+      "id": "storage_fru",
+      "type": "FRU",
+      "category": "StorageFRU",
+      "serviceability_type": "replaceable_fru",
+      "typical_symptoms": ["boot_failure", "slow_io", "data_loss", "bsod"],
+      "evidence_types": ["SMART", "NVMe_health", "disk_event", "read_write_test"]
+    },
+    {
+      "id": "wlan_module",
+      "type": "FRU",
+      "category": "CommunicationFRU",
+      "serviceability_type": "replaceable_fru",
+      "typical_symptoms": ["no_network", "wifi_disconnect", "bluetooth_failure"],
+      "evidence_types": ["network_event", "adapter_inventory", "gateway_ping", "bluetooth_test"]
+    },
+    {
+      "id": "display_panel_module",
+      "type": "FRU",
+      "category": "DisplayFRU",
+      "serviceability_type": "replaceable_fru",
+      "typical_symptoms": ["black_screen", "flicker", "backlight_failure"],
+      "evidence_types": ["display_event", "external_display_test", "panel_test"]
+    },
+    {
+      "id": "motherboard",
+      "type": "FRU",
+      "category": "MainboardFRU",
+      "serviceability_type": "serviceable_assembly",
+      "typical_symptoms": ["no_power", "multi_bus_failure", "whea", "intermittent_freeze"],
+      "evidence_types": ["WHEA", "ACPI", "PCIe", "multi_bus_stress"]
+    },
+    {
+      "id": "memory_subsystem",
+      "type": "subsystem",
+      "category": "ComputeFRU",
+      "serviceability_type": "non_replaceable_subsystem",
+      "parent_assembly": "motherboard",
+      "typical_symptoms": ["bsod", "memory_management", "random_reboot"],
+      "evidence_types": ["memory_test", "bugcheck", "WHEA"]
+    }
+  ]
+}

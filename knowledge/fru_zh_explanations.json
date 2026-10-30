@@ -1,0 +1,305 @@
+{
+  "version": "1.0",
+  "description": "Chinese explanations for FRU-level diagnosis targets. These texts describe repair-level modules, observable evidence, and diagnostic boundaries.",
+  "fru_explanations": {
+    "power_adapter": {
+      "name_zh": "电源适配器",
+      "category_zh": "供电模块",
+      "brief": "给设备提供外部直流电源的可更换部件，通常包括电源砖、线缆和输出接口。",
+      "role": "负责把市电转换为设备可用的输入电压和功率，是充电和高负载运行的前置供电来源。",
+      "common_symptoms": [
+        "接入电源后不充电或间歇充电",
+        "高负载时掉电、降频或电池仍持续放电",
+        "系统提示适配器功率异常或无法识别"
+      ],
+      "observable_evidence": [
+        "AC 供电状态变化",
+        "电池充放电状态",
+        "Kernel-Power、ACPI 或充电相关日志",
+        "主动功率检测结果"
+      ],
+      "diagnosis_boundary": "仅凭操作系统日志通常无法确认适配器输出功率，必须结合替换适配器、功率检测或充电行为测试。",
+      "replacement_caveat": "更换适配器后仍无法修复时，应继续检查 DC-in 接口、Type-C PD 路径、主板充电 IC、电池和 BIOS/EC 固件。"
+    },
+    "battery_pack": {
+      "name_zh": "电池包",
+      "category_zh": "供电模块",
+      "brief": "设备内部储能模块，通常由电芯、保护板和电池管理单元组成。",
+      "role": "在无外部电源时供电，并在外接电源时完成充电、容量上报和电池健康状态反馈。",
+      "common_symptoms": [
+        "续航明显缩短",
+        "电量跳变或无法充满",
+        "拔掉电源立即关机",
+        "系统报告电池异常"
+      ],
+      "observable_evidence": [
+        "电池是否存在",
+        "剩余电量、满充容量、循环次数",
+        "电池状态和 ACPI 电源日志",
+        "充放电主动测试"
+      ],
+      "diagnosis_boundary": "电池健康差不等于一定是电芯损坏，充电电路、适配器、EC 固件和系统电源策略都可能造成相似表现。",
+      "replacement_caveat": "更换电池后仍异常时，应检查适配器、主板充电路径、BIOS/EC、电池校准和系统电源驱动。"
+    },
+    "m2_ssd_module": {
+      "name_zh": "M.2 NVMe 固态硬盘",
+      "category_zh": "存储模块",
+      "brief": "安装在 M.2 插槽上的非易失性存储模块，保存操作系统、应用和用户数据。",
+      "role": "承担系统启动、文件读写和数据持久化，是故障诊断中最容易通过 SMART、日志和读写测试观测的 FRU 之一。",
+      "common_symptoms": [
+        "启动失败或蓝屏",
+        "文件损坏、读写卡顿",
+        "磁盘掉盘或分区丢失",
+        "系统日志出现 Disk、Ntfs、stornvme 错误"
+      ],
+      "observable_evidence": [
+        "磁盘枚举状态",
+        "SMART/健康状态",
+        "读写错误和文件系统日志",
+        "读写延迟与短自检结果"
+      ],
+      "diagnosis_boundary": "文件系统损坏、系统镜像问题、驱动错误和 M.2 插槽/PCIe 通道故障可能与 SSD 故障表现相似。",
+      "replacement_caveat": "更换 SSD 不能自动恢复丢失数据；若更换后仍掉盘，应检查插槽、主板 PCIe 通道、固件和散热。"
+    },
+    "ram_module": {
+      "name_zh": "内存条",
+      "category_zh": "计算模块",
+      "brief": "可更换的 SO-DIMM/内存模块，为系统运行提供易失性工作存储空间。",
+      "role": "影响系统稳定性、程序运行和缓存能力，故障时常表现为随机崩溃或无法开机。",
+      "common_symptoms": [
+        "随机蓝屏或重启",
+        "内存管理、页错误或 WHEA 相关事件",
+        "开机黑屏或无法通过自检",
+        "大负载下程序异常退出"
+      ],
+      "observable_evidence": [
+        "内存容量和插槽枚举",
+        "系统崩溃日志",
+        "Windows Memory Diagnostic 或 MemTest 结果",
+        "WHEA 或 BugCheck 事件"
+      ],
+      "diagnosis_boundary": "内存故障需要主动测试确认；驱动缺陷、CPU 内存控制器、主板内存槽和 BIOS 时序也可能产生类似症状。",
+      "replacement_caveat": "更换内存后仍异常时，应检查内存槽、主板、CPU 内存控制器、BIOS 版本和内存兼容性。"
+    },
+    "wlan_module": {
+      "name_zh": "无线网卡/蓝牙模块",
+      "category_zh": "通信模块",
+      "brief": "提供 Wi-Fi 和蓝牙能力的可更换通信模块，通常通过 M.2 E-key 或板载接口连接。",
+      "role": "负责无线网络连接、蓝牙外设连接和对应驱动状态上报。",
+      "common_symptoms": [
+        "Wi-Fi 或蓝牙消失",
+        "频繁断连或速率异常",
+        "设备管理器出现网络适配器错误",
+        "Netwtw、WLAN、Bluetooth 相关日志异常"
+      ],
+      "observable_evidence": [
+        "无线/蓝牙设备枚举状态",
+        "连接状态、信号强度、链路速率",
+        "网络驱动重置或断连日志",
+        "网关 ping、蓝牙配对主动测试"
+      ],
+      "diagnosis_boundary": "无线问题常受路由器、天线、驱动、系统网络栈和外部环境影响，不能只凭断连判断网卡损坏。",
+      "replacement_caveat": "更换 WLAN 模块后仍异常时，应检查天线线缆、M.2 插槽、驱动版本、路由器/AP 和系统网络配置。"
+    },
+    "fan_module": {
+      "name_zh": "风扇模块",
+      "category_zh": "散热模块",
+      "brief": "主动散热部件，通过转速变化带走 CPU/GPU 和机身内部热量。",
+      "role": "负责把热量从散热片和热管区域排出，是温度控制和性能稳定的重要模块。",
+      "common_symptoms": [
+        "风扇不转、异响或转速异常",
+        "温度过高导致降频",
+        "高负载下关机或重启",
+        "出现 thermal、fan、throttle 相关日志"
+      ],
+      "observable_evidence": [
+        "温度变化趋势",
+        "高负载下风扇响应",
+        "热事件和降频日志",
+        "主动负载测试结果"
+      ],
+      "diagnosis_boundary": "很多消费级笔记本不直接暴露风扇转速，必须结合温度曲线、负载测试和听感/目视检查。",
+      "replacement_caveat": "更换风扇后仍高温时，应检查灰尘、散热片、热管、硅脂、EC 风扇曲线和主板风扇供电。"
+    },
+    "heat_sink": {
+      "name_zh": "散热片/热管组件",
+      "category_zh": "散热模块",
+      "brief": "被动散热组件，通常由铜底、热管、鳍片和导热材料组成。",
+      "role": "把 CPU/GPU 热量传导到风扇排风区域，本身一般不提供可被系统直接读取的传感器。",
+      "common_symptoms": [
+        "风扇正常但温度仍过高",
+        "短时间高负载即降频",
+        "局部温度异常或散热不均",
+        "更换硅脂前后温度差异明显"
+      ],
+      "observable_evidence": [
+        "温度-负载曲线",
+        "热降频比例",
+        "风扇正常情况下的过热事件",
+        "拆机目视检查"
+      ],
+      "diagnosis_boundary": "散热片是被动件，操作系统通常无法直接确认其好坏，需要通过热行为和拆机检查间接判断。",
+      "replacement_caveat": "更换散热片后仍异常时，应检查风扇、硅脂/相变片、螺丝压力、灰尘、CPU/GPU 本体和 BIOS 功耗策略。"
+    },
+    "motherboard": {
+      "name_zh": "主板组件",
+      "category_zh": "主控模块",
+      "brief": "承载 CPU、芯片组、供电、总线、接口控制器和大量板载器件的核心 FRU。",
+      "role": "连接并协调各模块，是多总线、多子系统异常时的重要定位对象。",
+      "common_symptoms": [
+        "多个独立模块同时异常",
+        "WHEA、PCIe、ACPI、固件相关错误",
+        "无法开机、随机掉电或无法枚举设备",
+        "CPU/GPU/USB/LAN 等板载功能异常"
+      ],
+      "observable_evidence": [
+        "BaseBoard 信息",
+        "WHEA 和 ACPI 日志",
+        "多个总线设备的问题码",
+        "跨模块故障相关性"
+      ],
+      "diagnosis_boundary": "主板是兜底但不应滥用的定位对象，只有当多个证据源指向板载路径或排除独立 FRU 后才应提高置信度。",
+      "replacement_caveat": "主板更换成本高，需先排除适配器、电池、内存、SSD、无线模块和外设；更换后还可能涉及 BIOS、序列号和授权信息。"
+    },
+    "display_panel_module": {
+      "name_zh": "内置显示屏模组",
+      "category_zh": "显示模块",
+      "brief": "笔记本内置屏幕相关的可更换模组，通常包括 LCD/OLED 面板和背光相关部分。",
+      "role": "负责本机图像显示，需与显卡、排线、背光供电和显示驱动区分诊断。",
+      "common_symptoms": [
+        "内屏黑屏但外接显示正常",
+        "花屏、闪屏、亮线或背光异常",
+        "亮度无法调节",
+        "显示器枚举异常"
+      ],
+      "observable_evidence": [
+        "显示器/面板枚举",
+        "显示驱动日志",
+        "外接显示对比测试",
+        "屏幕图案、背光和坏点主动测试"
+      ],
+      "diagnosis_boundary": "显示驱动错误不等于屏幕损坏，必须区分面板、排线、显卡、主板显示输出和系统驱动。",
+      "replacement_caveat": "更换屏幕后仍异常时，应检查 eDP 排线、接口、主板显示通道、显卡驱动和 BIOS 显示配置。"
+    },
+    "camera_module": {
+      "name_zh": "摄像头模组",
+      "category_zh": "传感器模块",
+      "brief": "内置摄像头及其连接线/小板相关模块，用于图像采集和视频通信。",
+      "role": "提供视频输入能力，通常以 USB/UVC 或平台摄像头设备形式被系统识别。",
+      "common_symptoms": [
+        "摄像头设备消失",
+        "应用无法打开摄像头",
+        "画面黑屏、花屏或频繁断开",
+        "隐私开关或权限状态异常"
+      ],
+      "observable_evidence": [
+        "Camera/PnP 设备枚举",
+        "UVC 或摄像头驱动日志",
+        "应用权限状态",
+        "拍照/录像主动测试"
+      ],
+      "diagnosis_boundary": "摄像头不可用可能由隐私权限、驱动、应用占用或快捷键禁用导致，不应直接判定模组损坏。",
+      "replacement_caveat": "更换摄像头后仍异常时，应检查排线、屏幕上盖小板、USB 通道、驱动、隐私开关和系统权限。"
+    },
+    "keyboard_module": {
+      "name_zh": "键盘模组",
+      "category_zh": "输入模块",
+      "brief": "笔记本内置键盘及背光相关的可更换输入模块。",
+      "role": "负责按键输入、组合键和部分设备控制快捷键，通常通过 HID/嵌入式控制器路径上报。",
+      "common_symptoms": [
+        "单个或一组按键失效",
+        "按键连击、误触或无响应",
+        "键盘背光异常",
+        "HID 或键盘设备日志异常"
+      ],
+      "observable_evidence": [
+        "键盘/HID 设备枚举",
+        "键盘事件和驱动日志",
+        "按键矩阵主动测试",
+        "外接键盘对比测试"
+      ],
+      "diagnosis_boundary": "外接键盘正常只能说明系统输入栈大概率正常，内置键盘还需区分键盘本体、排线、EC 和主板接口。",
+      "replacement_caveat": "更换键盘后仍异常时，应检查排线、键盘接口、EC 固件、主板输入通道和系统热键驱动。"
+    },
+    "touchpad_module": {
+      "name_zh": "触控板模组",
+      "category_zh": "输入模块",
+      "brief": "内置触控板及其按键/手势控制模块，通常通过 I2C HID 或 HID 设备呈现。",
+      "role": "提供指针移动、点击和多指手势输入。",
+      "common_symptoms": [
+        "触控板无响应",
+        "光标漂移或误触",
+        "手势失效",
+        "I2C HID 设备报错"
+      ],
+      "observable_evidence": [
+        "Touchpad/I2C HID 设备枚举",
+        "HID 日志和问题码",
+        "触控板手势主动测试",
+        "BIOS/系统设置中的启用状态"
+      ],
+      "diagnosis_boundary": "触控板失效可能由快捷键禁用、驱动、系统设置、电源管理或 I2C 控制器异常造成。",
+      "replacement_caveat": "更换触控板后仍异常时，应检查排线、I2C 总线、主板接口、BIOS 设置和 HID 驱动。"
+    },
+    "speaker_module": {
+      "name_zh": "扬声器模组",
+      "category_zh": "接口/音频模块",
+      "brief": "设备内置左右声道扬声器及连接线。",
+      "role": "负责本机声音输出，需要与音频编解码器、驱动、系统音量和外接音频设备区分。",
+      "common_symptoms": [
+        "内置扬声器无声",
+        "单侧声道无声或破音",
+        "声音断续、杂音明显",
+        "耳机或蓝牙正常但内放异常"
+      ],
+      "observable_evidence": [
+        "音频设备枚举",
+        "声道主动测试",
+        "音频服务和驱动状态",
+        "耳机/外放对比测试"
+      ],
+      "diagnosis_boundary": "系统能识别音频设备并不代表扬声器正常，扬声器健康主要依赖主动播放和听感/录音反馈。",
+      "replacement_caveat": "更换扬声器后仍异常时，应检查音频功放、音频编解码器、排线、系统音量、驱动和 I/O 板。"
+    },
+    "led_board": {
+      "name_zh": "状态指示灯小板",
+      "category_zh": "接口/指示模块",
+      "brief": "承载电源、充电、硬盘或其他状态指示灯的小型可更换板件。",
+      "role": "提供设备状态的可视化反馈，通常不直接向操作系统暴露独立传感器。",
+      "common_symptoms": [
+        "指示灯不亮或颜色异常",
+        "充电/电源状态显示不一致",
+        "小板连接区域受损",
+        "维修后指示灯失效"
+      ],
+      "observable_evidence": [
+        "人工目视检查",
+        "电源和充电状态对比",
+        "LED 主动测试",
+        "拆机连接检查"
+      ],
+      "diagnosis_boundary": "LED 小板通常无法通过日志直接诊断，更多依赖人工观察和维修站测试。",
+      "replacement_caveat": "更换 LED 小板后仍异常时，应检查排线、主板控制信号、电源状态源和 EC 固件。"
+    },
+    "io_board": {
+      "name_zh": "I/O 接口板",
+      "category_zh": "接口模块",
+      "brief": "承载 USB、Type-C、音频口、网口、HDMI 或部分侧边接口的小板或接口区域。",
+      "role": "负责外部设备接入和接口信号转接，具体接口归属取决于机型结构。",
+      "common_symptoms": [
+        "某个或某组接口无法识别设备",
+        "USB 设备频繁断开",
+        "Type-C、网口或音频口异常",
+        "device not recognized、hub、UCM-UCSI 等日志异常"
+      ],
+      "observable_evidence": [
+        "USB/I/O 控制器枚举",
+        "接口相关事件日志",
+        "端口插拔主动测试",
+        "不同外设交叉验证"
+      ],
+      "diagnosis_boundary": "接口问题要区分外设、线缆、驱动、接口小板、主板控制器和系统电源管理。",
+      "replacement_caveat": "更换 I/O 板后仍异常时，应检查主板控制器、连接排线、接口供电、驱动和外设兼容性。"
+    }
+  }
+}
